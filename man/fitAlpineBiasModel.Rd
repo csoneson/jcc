@@ -6,7 +6,8 @@
 \usage{
 fitAlpineBiasModel(gtf, bam, organism, genome, genomeVersion, version,
   minLength = 600, maxLength = 7000, minCount = 500, maxCount = 10000,
-  subsample = TRUE, nbrSubsample = 200, verbose = FALSE)
+  subsample = TRUE, nbrSubsample = 200, minSize = NULL, maxSize = NULL,
+  verbose = FALSE)
 }
 \arguments{
 \item{gtf}{gtf file with genomic features. Preferably in Ensembl format}

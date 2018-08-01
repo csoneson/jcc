@@ -1,3 +1,18 @@
+#' Weight function
+#'
+#' Function to determine the weight for a junction in the calculation of the JCC
+#' scores and the scaled coverages. This function is used by
+#' \code{junctionScore} and \code{scaledCoverage}, and does not have to be
+#' called by the user.
+#'
+#' @param omega Fraction of uniquely mapped reads among those spanning the
+#'   junction.
+#' @param thr Threshold value. If \code{omega} is above this value, the junction
+#'   contributes to the JCC score of the gene. If \code{omega} is below this
+#'   value, the junction doesn't contribute.
+#'
+#' @author Charlotte Soneson
+#'
 gthr <- function(omega, thr) {
   sapply(omega, function(o) {
     if (is.na(o) || o >= (1 - thr)) 1
@@ -35,6 +50,16 @@ scaledCoverage <- function(uniqreads, mmreads, predcovs, g, beta = 1, ...) {
   w1 * predcovs
 }
 
+#' Calculate scaled coverages and JCC scores
+#'
+#' @param junctionCounts
+#' @param txQuantsGene
+#' @param mmfracthreshold
+#'
+#' @author Charlotte Soneson
+#'
+#' @export
+#'
 calculateJCCScores <- function(junctionCounts, txQuantsGene, mmfracthreshold = 0.25) {
   ## Calculate score.
   junctionCounts <- junctionCounts %>%

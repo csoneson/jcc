@@ -34,53 +34,112 @@ Additional columns providing, e.g., gene symbols can be included.
 - A `data.frame` with estimated transcript abundances, with three columns named `transcript`, `TPM` and `count`. 
 Note that this table should _not_ contain a column named `gene`.
 
-The general procedure is outlined in the figure below:
+The general procedure is outlined in the figure below. Please refer to the paper [@soneson2018jcc] for a more detailed description and motivation of the different steps. 
 
 <img src="study_design.png" alt="drawing" width="400px"/>
 
+In the rest of this vignette, we will illustrate each step using a small example data set provided with the package. 
 
-```{r, eval = FALSE}
-library(jcc)
-library(dplyr)
-tmp <- readRDS("/Volumes/charlotte/annotation_problem_txabundance/alpine/20151016.A-Cortex_RNA/alpine_fitbiasmodel.rds")
-bam <- "/Volumes/charlotte/annotation_problem_txabundance/STAR/20151016.A-Cortex_RNA/20151016.A-Cortex_RNA_Aligned.sortedByCoord.out.bam"
-tx2gene <- readRDS("/Volumes/charlotte/annotation_problem_txabundance/reference/Homo_sapiens.GRCh38.90_tx2gene_ext.rds")
-tx2gene$gene <- gsub("\\.[0-9]+$", "", tx2gene$gene)
-tx2gene$tx <- gsub("\\.[0-9]+$", "", tx2gene$tx)
-library(BSgenome.Hsapiens.NCBI.GRCh38)
-preds <- predictTxCoverage(biasModel = tmp$fitpar, exonsByTx = tmp$ebt0, 
-                           bam = bam, tx2Gene = tx2gene, genome = Hsapiens,
-                           genes = c("ENSG00000108106", "ENSG00000037749"), 
-                           nCores = 1, verbose = TRUE)
+# Fit fragment bias model
+
+The first step in the process is to fit a fragment bias model, using the `r Biocpkg("alpine")` package. 
+The `fitAlpineBiasModel()` function provides a wrapper containing the necessary steps. 
+Note that the parameters of this function need to be adapted to each specific data set. 
+See the help file and the `r Biocpkg("alpine")` package for more detailed explanations of each parameter. 
+The `BSgenome` object (`Hsapiens`) should be replaced with the appropriate object for your organism and alignment.
+
+```{r}
+suppressPackageStartupMessages({
+  library(jcc)
+  library(dplyr)
+  library(BSgenome.Hsapiens.NCBI.GRCh38)
+})
+
+gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz", 
+                   package = "jcc")
+bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
+
+biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
+                              genome = Hsapiens, genomeVersion = "GRCh38",
+                              version = 90, minLength = 230, maxLength = 7000,
+                              minCount = 10, maxCount = 10000, subsample = TRUE,
+                              nbrSubsample = 30, minSize = NULL, maxSize = 220, 
+                              verbose = TRUE)
+names(biasMod)
 ```
 
-```{r, eval = FALSE}
-txQuants <- read.delim("/Volumes/charlotte/annotation_problem_txabundance/salmon/cDNAncRNA/20151016.A-Cortex_RNA/quant.sf", header = TRUE, as.is = TRUE)
-txQuants$Name <- gsub("\\.[0-9]+$", "", txQuants$Name)
-txQuants <- txQuants %>% dplyr::rename(transcript = Name, count = NumReads) %>%
-    dplyr::select(transcript, count, TPM)
+# Predict transcript coverage profiles
+
+Next, we predict the coverage profile for each transcript in the specified genes. 
+The `genes` argument can be set to `NULL` to predict the coverage profiles for all transcripts in the annotation catalog. 
+Note, however, that this is computationally demanding.
+
+```{r}
+tx2gene <- system.file("extdata/tx2gene.sub.rds", package = "jcc")
+tx2gene <- readRDS(tx2gene)
+head(tx2gene)
+preds <- predictTxCoverage(biasModel = biasMod$biasModel, 
+                           exonsByTx = biasMod$exonsByTx, 
+                           bam = bam, tx2Gene = tx2gene, genome = Hsapiens,
+                           genes = c("ENSG00000070371", "ENSG00000244296"), 
+                           nCores = 1, verbose = TRUE)
+preds[2]
+```
+
+# Scale transcript coverage profiles
+
+Based on the predicted transcript coverage profiles obtained above and the estimated transcript abundances, we next determine the number of reads predicted to map across each annotated splice junction. 
+
+```{r}
+txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
 txsc <- scaleTxCoverages(txCoverageProfiles = preds, 
                          txQuants = txQuants, tx2Gene = tx2gene,
                          strandSpecific = TRUE, methodName = "Salmon", 
                          verbose = TRUE)
-
+names(txsc)
+head(txsc$allcovs)
+head(txsc$quants)
 ```
 
-```{r, eval = FALSE}
-jcov <- read.delim("/Volumes/charlotte/annotation_problem_txabundance/STAR/20151016.A-Cortex_RNA/20151016.A-Cortex_RNA_SJ.out.tab", header = FALSE, as.is = TRUE)
-colnames(jcov) <- c("seqnames", "start", "end", "strand", "motif", "annot",
-                    "uniqreads", "mmreads", "maxoverhang")
-jcov <- jcov %>% dplyr::mutate(strand = replace(strand, strand == 1, "+")) %>%
+# Combine observed predicted junction coverages
+
+Assuming the reads were aligned to the genome with STAR, we have a text file (with name ending in `SJ.out.tab`) containing the number of reads spanning each annotated junction. 
+Below, we read this file, add column names and combine these observed junction coverages with the predicted ones obtained above. 
+
+```{r}
+jcov <- read.delim(system.file("extdata/sub.SJ.out.tab", package = "jcc"),
+                   header = FALSE, as.is = TRUE) %>%
+  setNames(c("seqnames", "start", "end", "strand", "motif", "annot",
+             "uniqreads", "mmreads", "maxoverhang")) %>% 
+  dplyr::mutate(strand = replace(strand, strand == 1, "+")) %>%
   dplyr::mutate(strand = replace(strand, strand == 2, "-")) %>%
-  dplyr::select(seqnames, start, end, strand, uniqreads, mmreads)
+  dplyr::select(seqnames, start, end, strand, uniqreads, mmreads) %>%
+  dplyr::mutate(seqnames = as.character(seqnames))
 
 combCov <- combineCoverages(junctionCounts = jcov, 
                             predictedCoverages = txsc$allcovs,
                             txQuants = txsc$quants)
+names(combCov)
+head(combCov$junctions %>% as.data.frame())
+head(combCov$transcripts %>% as.data.frame())
+head(combCov$genes %>% as.data.frame())
 ```
 
-```{r, eval = FALSE}
+# Calculate JCC scores
+
+Finally, we calculate scaled predicted junction coverages and summarize the differences between the observed and predicted junction coverages for each gene in the JCC (junction coverage compatibility) scores. 
+
+```{r}
 jcc <- calculateJCCScores(junctionCounts = combCov$junctions, 
                           txQuantsGene = combCov$genes)
+head(jcc$junctions %>% as.data.frame())
+head(jcc$genes %>% as.data.frame())
 ```
 
+# Session info
+
+```{r}
+sessionInfo()
+```
+
+# References

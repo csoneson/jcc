@@ -1,10 +1,20 @@
+#' Combine observed and predicted coverages
+#'
+#' @param junctionCounts
+#' @param predictedCoverages
+#' @param txQuants
+#'
+#' @author Charlotte Soneson
+#'
+#' @export
+#'
+#' @examples
 #' jcov <- read.delim(junctioncovSTAR, header = FALSE, as.is = TRUE)
 #' colnames(jcov) <- c("seqnames", "start", "end", "strand", "motif", "annot",
 #'                     "uniqreads", "mmreads", "maxoverhang")
 #' jcov <- jcov %>% dplyr::mutate(strand = replace(strand, strand == 1, "+")) %>%
 #'   dplyr::mutate(strand = replace(strand, strand == 2, "-")) %>%
 #'   dplyr::select(seqnames, start, end, strand, uniqreads, mmreads)
-
 combineCoverages <- function(junctionCounts, predictedCoverages,
                              txQuants) {
   jcovnostrand <- junctionCounts %>% group_by(seqnames, start, end) %>%

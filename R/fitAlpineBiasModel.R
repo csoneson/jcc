@@ -26,12 +26,13 @@
 #' @importFrom S4Vectors DataFrame mcols
 #' @importFrom GenomeInfoDb keepStandardChromosomes
 #' @importFrom Rsamtools countBam BamFile ScanBamParam
-#' @importFrom alpine getFragmentWidths buildFragtypes fitBiasModels
+#' @importFrom alpine getFragmentWidths buildFragtypes fitBiasModels getReadLength
 #'
 fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
                                version, minLength = 600, maxLength = 7000,
                                minCount = 500, maxCount = 10000, subsample = TRUE,
-                               nbrSubsample = 200, verbose = FALSE) {
+                               nbrSubsample = 200, minSize = NULL, maxSize = NULL,
+                               verbose = FALSE) {
 
   ## Define the temporary directory where the ensDb object will be saved
   tmpdir <- tempdir()
@@ -112,7 +113,7 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
   if (subsample) {
     message("Subsampling genes for fitting bias model...")
     set.seed(1)
-    ebt.fit <- ebt.fit[sample(length(ebt.fit), max(nbrSubsample, length(ebt.fit)))]
+    ebt.fit <- ebt.fit[sample(length(ebt.fit), min(nbrSubsample, length(ebt.fit)))]
     if (verbose) message(paste0(length(ebt.fit), " genes retained."))
   }
 
@@ -130,7 +131,9 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
     })
   }
   quantiles <- quantile(w, c(.025, .975))
-  readlength <- median(getReadLength(bam.files))
+  if (is.null(minSize)) minSize <- round(quantiles[1])
+  if (is.null(maxSize)) maxSize <- round(quantiles[2])
+  readlength <- median(alpine::getReadLength(bam.files))
 
   ## Names of genes to retain
   gene.names <- names(ebt.fit)
@@ -142,8 +145,8 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
     alpine::buildFragtypes(exons = ebt.fit[[gene.name]],
                            genome = Hsapiens,
                            readlength = readlength,
-                           minsize = quantiles[1],
-                           maxsize = quantiles[2],
+                           minsize = minSize,
+                           maxsize = maxSize,
                            gc.str = FALSE)
   })
 
@@ -165,8 +168,8 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
                           genome = Hsapiens,
                           models = models,
                           readlength = readlength,
-                          minsize = quantiles[1],
-                          maxsize = quantiles[2])
+                          minsize = minSize,
+                          maxsize = maxSize)
   })
 
   list(biasModel = fitpar, exonsByTx = ebt0, transcripts = txps)

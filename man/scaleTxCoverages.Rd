@@ -5,7 +5,7 @@
 \title{Scale transcript coverages by abundance estimate}
 \usage{
 scaleTxCoverages(txCoverageProfiles, txQuants, tx2Gene, strandSpecific,
-  verbose = FALSE)
+  methodName, verbose = FALSE)
 }
 \arguments{
 \item{verbose}{}

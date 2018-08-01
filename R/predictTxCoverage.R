@@ -29,8 +29,10 @@ predictTxCoverage <- function(biasModel, exonsByTx, bam, genes, nCores,
 
   ## Get all transcripts
   transcripts <- names(ebt0)
-  transcriptsInProvidedGenes <- tx2Gene$tx[tx2Gene$gene %in% genes]
-  transcripts <- intersect(transcripts, transcriptsInProvidedGenes)
+  if (!is.null(genes)) {
+    transcriptsInProvidedGenes <- tx2Gene$tx[tx2Gene$gene %in% genes]
+    transcripts <- intersect(transcripts, transcriptsInProvidedGenes)
+  }
   names(transcripts) <- transcripts
   if (verbose) message(paste0("Predicting coverage for ", length(transcripts), " transcripts..."))
 

@@ -4,7 +4,8 @@
 \alias{predictTxCoverage}
 \title{Predict coverage profiles of transcripts}
 \usage{
-predictTxCoverage(biasModel, exonsByTx, genes, nCores, verbose = FALSE)
+predictTxCoverage(biasModel, exonsByTx, bam, genes, nCores, tx2Gene, genome,
+  verbose = FALSE)
 }
 \arguments{
 \item{verbose}{}
