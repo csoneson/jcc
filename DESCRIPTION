@@ -1,0 +1,21 @@
+Package: jcc
+Type: Package
+Title: Calculate JCC Scores
+Version: 0.1.0
+Author: Charlotte Soneson and Michael I Love
+Maintainer: Charlotte Soneson <charlottesoneson@gmail.com>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: License
+Encoding: UTF-8
+LazyData: true
+Imports: GenomicFeatures,
+    ensembldb,
+    S4Vectors,
+    GenomeInfoDb,
+    Rsamtools,
+    GenomicRanges
+RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
