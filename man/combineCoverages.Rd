@@ -7,10 +7,17 @@
 combineCoverages(junctionCounts, predictedCoverages, txQuants)
 }
 \arguments{
-\item{txQuants}{}
+\item{junctionCounts}{data.frame with observed junction coverages}
+
+\item{predictedCoverages}{data.frame with predicted junction coverages}
+
+\item{txQuants}{data.frame with estimated transcript abundances}
+}
+\value{
+
 }
 \description{
-Combine observed and predicted coverages
+Description...
 }
 \examples{
 jcov <- read.delim(junctioncovSTAR, header = FALSE, as.is = TRUE)
@@ -19,6 +26,10 @@ colnames(jcov) <- c("seqnames", "start", "end", "strand", "motif", "annot",
 jcov <- jcov \%>\% dplyr::mutate(strand = replace(strand, strand == 1, "+")) \%>\%
   dplyr::mutate(strand = replace(strand, strand == 2, "-")) \%>\%
   dplyr::select(seqnames, start, end, strand, uniqreads, mmreads)
+
+}
+\references{
+Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
 }
 \author{
 Charlotte Soneson

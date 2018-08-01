@@ -1,14 +1,26 @@
 #' Predict coverage profiles of transcripts
 #'
-#' @param biasModel
-#' @param exonsByTx
-#' @param genes
-#' @param nCores
-#' @param verbose
+#' Description
+#'
+#' @param biasModel Bias model from \code{\link alpine}
+#' @param exonsByTx exons by tx
+#' @param bam Character, path to bam file
+#' @param genes Character vector with genes of interest
+#' @param nCores Integer, number of cores to use for parallel computations
+#' @param tx2Gene data.frame with transcript to gene mapping
+#' @param genome BSgenome object
+#' @param verbose Logical, should progress be written out?
+#'
+#' @return
+#'
+#' @author Charlotte Soneson, Michael I Love
 #'
 #' @export
 #'
-#' @author Charlotte Soneson, Michael I Love
+#' @references
+#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
+#'
+#' @examples
 #'
 #' @importFrom alpine predictCoverage
 #' @importFrom GenomicRanges setdiff

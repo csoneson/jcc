@@ -1,12 +1,19 @@
 #' Combine observed and predicted coverages
 #'
-#' @param junctionCounts
-#' @param predictedCoverages
-#' @param txQuants
+#' Description...
+#'
+#' @param junctionCounts data.frame with observed junction coverages
+#' @param predictedCoverages data.frame with predicted junction coverages
+#' @param txQuants data.frame with estimated transcript abundances
+#'
+#' @return
 #'
 #' @author Charlotte Soneson
 #'
 #' @export
+#'
+#' @references
+#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
 #'
 #' @examples
 #' jcov <- read.delim(junctioncovSTAR, header = FALSE, as.is = TRUE)
@@ -15,9 +22,14 @@
 #' jcov <- jcov %>% dplyr::mutate(strand = replace(strand, strand == 1, "+")) %>%
 #'   dplyr::mutate(strand = replace(strand, strand == 2, "-")) %>%
 #'   dplyr::select(seqnames, start, end, strand, uniqreads, mmreads)
+#'
+#' @importFrom dplyr summarize mutate select ungroup group_by left_join distinct
+#'   arrange filter
+#'
 combineCoverages <- function(junctionCounts, predictedCoverages,
                              txQuants) {
-  jcovnostrand <- junctionCounts %>% group_by(seqnames, start, end) %>%
+  jcovnostrand <- junctionCounts %>%
+    dplyr::group_by(seqnames, start, end) %>%
     dplyr::summarize(uniqreads = sum(uniqreads),
                      mmreads = sum(mmreads)) %>%
     dplyr::mutate(strand = "*") %>% dplyr::ungroup() %>%

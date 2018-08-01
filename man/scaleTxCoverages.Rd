@@ -8,10 +8,27 @@ scaleTxCoverages(txCoverageProfiles, txQuants, tx2Gene, strandSpecific,
   methodName, verbose = FALSE)
 }
 \arguments{
-\item{verbose}{}
+\item{txCoverageProfiles}{List of predicted transcript coverage profiles}
+
+\item{txQuants}{data.frame with estimated transcript abundances}
+
+\item{tx2Gene}{data.frame with transcript-to-gene mapping}
+
+\item{strandSpecific}{Logical, is the data strand specific?}
+
+\item{verbose}{Logical, should progress be written out?}
+}
+\value{
+
 }
 \description{
-Scale transcript coverages by abundance estimate
+Description
+}
+\examples{
+
+}
+\references{
+Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
 }
 \author{
 Charlotte Soneson

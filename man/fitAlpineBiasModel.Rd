@@ -35,10 +35,22 @@ satisfying the \code{minLength}, \code{maxLength}, \code{minCount} and
 \item{nbrSubsample}{If \code{subsample} is \code{TRUE}, how many genes to
 subsample}
 
-\item{verbose}{Whether to print progress messages}
+\item{minSize, maxSize}{Smallest and largest fragment size to consider. If any
+of these is null, it is estimated from the data.}
+
+\item{verbose}{Logical, whether to print progress messages.}
+}
+\value{
+
 }
 \description{
-Fit fragment bias model with alpine
+Description
+}
+\examples{
+
+}
+\references{
+Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
 }
 \author{
 Charlotte Soneson, Michael I Love

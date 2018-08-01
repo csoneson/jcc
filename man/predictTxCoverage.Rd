@@ -8,10 +8,33 @@ predictTxCoverage(biasModel, exonsByTx, bam, genes, nCores, tx2Gene, genome,
   verbose = FALSE)
 }
 \arguments{
-\item{verbose}{}
+\item{biasModel}{Bias model from \code{\link alpine}}
+
+\item{exonsByTx}{exons by tx}
+
+\item{bam}{Character, path to bam file}
+
+\item{genes}{Character vector with genes of interest}
+
+\item{nCores}{Integer, number of cores to use for parallel computations}
+
+\item{tx2Gene}{data.frame with transcript to gene mapping}
+
+\item{genome}{BSgenome object}
+
+\item{verbose}{Logical, should progress be written out?}
+}
+\value{
+
 }
 \description{
-Predict coverage profiles of transcripts
+Description
+}
+\examples{
+
+}
+\references{
+Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
 }
 \author{
 Charlotte Soneson, Michael I Love

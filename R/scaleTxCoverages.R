@@ -1,14 +1,25 @@
 #' Scale transcript coverages by abundance estimate
 #'
-#' @param txCoverageProfiles
-#' @param txQuants
-#' @param tx2Gene
-#' @param strandSpecific
-#' @param verbose
+#' Description
+#'
+#' @param txCoverageProfiles List of predicted transcript coverage profiles
+#' @param txQuants data.frame with estimated transcript abundances
+#' @param tx2Gene data.frame with transcript-to-gene mapping
+#' @param strandSpecific Logical, is the data strand specific?
+#' @param verbose Logical, should progress be written out?
+#'
+#' @return
+#'
+#' @author Charlotte Soneson
 #'
 #' @export
 #'
-#' @author Charlotte Soneson
+#' @references
+#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
+#'
+#' @examples
+#'
+#' @importFrom dplyr mutate group_by ungroup left_join select distinct select
 #'
 scaleTxCoverages <- function(txCoverageProfiles, txQuants, tx2Gene,
                              strandSpecific, methodName, verbose = FALSE) {

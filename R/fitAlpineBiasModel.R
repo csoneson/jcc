@@ -1,5 +1,7 @@
 #' Fit fragment bias model with alpine
 #'
+#' Description
+#'
 #' @param gtf gtf file with genomic features. Preferably in Ensembl format
 #' @param bam bam file with read alignments to the genome
 #' @param organism The organism
@@ -15,11 +17,20 @@
 #'   \code{maxCount} criteria before fitting fragment bias model
 #' @param nbrSubsample If \code{subsample} is \code{TRUE}, how many genes to
 #'   subsample
-#' @param verbose Whether to print progress messages
+#' @param minSize,maxSize Smallest and largest fragment size to consider. If any
+#'   of these is null, it is estimated from the data.
+#' @param verbose Logical, whether to print progress messages.
+#'
+#' @return
+#'
+#' @author Charlotte Soneson, Michael I Love
 #'
 #' @export
 #'
-#' @author Charlotte Soneson, Michael I Love
+#' @references
+#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
+#'
+#' @examples
 #'
 #' @importFrom GenomicFeatures makeTxDbFromGFF transcripts exonsBy
 #' @importFrom ensembldb ensDbFromGtf EnsDb exonsBy
