@@ -7,10 +7,27 @@
 calculateJCCScores(junctionCounts, txQuantsGene, mmfracthreshold = 0.25)
 }
 \arguments{
-\item{mmfracthreshold}{}
+\item{junctionCounts}{data.frame with observed and predicted junction counts}
+
+\item{txQuantsGene}{data.frame with gene-level abundances}
+
+\item{mmfracthreshold}{Scalar value in [0, 1] indicating the maximal fraction
+of multimapping reads a junction can have to contribute to the score.}
+}
+\value{
+A list with two elements: (i) \code{junctions}, a data.frame with
+  observed and predicted junction coverages; (ii) \code{genes}, a data.frame
+  with gene-level abundances and scores.
 }
 \description{
-Calculate scaled coverages and JCC scores
+Function to calculate the scaled predicted junction coverage for each
+junction, and the JCC score for each gene.
+}
+\examples{
+
+}
+\references{
+Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
 }
 \author{
 Charlotte Soneson
