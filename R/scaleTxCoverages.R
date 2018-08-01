@@ -6,6 +6,7 @@
 #' @param txQuants data.frame with estimated transcript abundances
 #' @param tx2Gene data.frame with transcript-to-gene mapping
 #' @param strandSpecific Logical, is the data strand specific?
+#' @param methodName Name to use for the abundance estimation method.
 #' @param verbose Logical, should progress be written out?
 #'
 #' @return

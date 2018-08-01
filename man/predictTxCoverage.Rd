@@ -8,7 +8,7 @@ predictTxCoverage(biasModel, exonsByTx, bam, genes, nCores, tx2Gene, genome,
   verbose = FALSE)
 }
 \arguments{
-\item{biasModel}{Bias model from \code{\link alpine}}
+\item{biasModel}{Bias model from \code{\link{alpine}}}
 
 \item{exonsByTx}{exons by tx}
 

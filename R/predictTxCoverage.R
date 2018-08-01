@@ -2,7 +2,7 @@
 #'
 #' Description
 #'
-#' @param biasModel Bias model from \code{\link alpine}
+#' @param biasModel Bias model from \code{alpine}
 #' @param exonsByTx exons by tx
 #' @param bam Character, path to bam file
 #' @param genes Character vector with genes of interest
