@@ -6,8 +6,8 @@
 #' levels within given ranges) and use the observed read coverages to fit a
 #' fragment bias model.
 #'
-#' @param gtf gtf file with genomic features. Preferably in Ensembl format.
-#' @param bam bam file with read alignments to the genome.
+#' @param gtf Path to gtf file with genomic features. Preferably in Ensembl format.
+#' @param bam Path to bam file with read alignments to the genome.
 #' @param genome A \code{BSgenome} object.
 #' @param organism The organism (e.g., 'Homo_sapiens'). This argument will be
 #'   passed to \code{ensembldb::ensDbFromGtf}.
@@ -103,7 +103,7 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
   }
 
   ## Get list of exons by transcript
-  if (verbose) message("Generating list of exons by transcript")
+  if (verbose) message("Generating list of exons by transcript...")
   if (class(txdb) == "EnsDb") {
     ebt0 <- ensembldb::exonsBy(txdb, by = "tx")
   } else {
@@ -113,56 +113,56 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
   ## Select genes with a single isoform
   if (verbose) message("Selecting genes with a single isoform...")
   tab <- table(txdf$gene_id)
-  one.iso.genes <- names(tab)[tab == 1]
-  if (verbose) message(paste0(length(one.iso.genes), " single-isoform genes found."))
+  oneIsoGenes <- names(tab)[tab == 1]
+  if (verbose) message(paste0(length(oneIsoGenes), " single-isoform genes found."))
 
   ## Get transcript names for genes with a single isoform
-  one.iso.txs <- txdf$tx_id[txdf$gene_id %in% one.iso.genes]
+  oneIsoTxs <- txdf$tx_id[txdf$gene_id %in% oneIsoGenes]
 
   ## Extract transcripts from one-isoform genes for use in fitting bias model
-  ebt.fit <- ebt0[one.iso.txs]
-  ebt.fit <- GenomeInfoDb::keepStandardChromosomes(ebt.fit, pruning.mode = "coarse")
+  ebtFit <- ebt0[oneIsoTxs]
+  ebtFit <- GenomeInfoDb::keepStandardChromosomes(ebtFit, pruning.mode = "coarse")
 
   ## Filter short genes and long genes
   if (verbose) message("Filtering out too short and too long transcripts...")
-  min.bp <- minLength
-  max.bp <- maxLength
-  gene.lengths <- sum(width(ebt.fit))
-  ebt.fit <- ebt.fit[gene.lengths > min.bp & gene.lengths < max.bp]
-  if (verbose) message(paste0(length(ebt.fit), " transcripts remaining"))
+  minBp <- minLength
+  maxBp <- maxLength
+  geneLengths <- sum(width(ebtFit))
+  ebtFit <- ebtFit[geneLengths > minBp & geneLengths < maxBp]
+  if (verbose) message(paste0(length(ebtFit), " transcripts remaining."))
 
   ## Read bam file
   if (verbose) message("Reading bam file...")
-  bam.files <- bam
-  names(bam.files) <- "1"
+  bamFiles <- bam
+  names(bamFiles) <- "1"
 
   ## Subset to medium-to-high expressed genes
   if (verbose) message("Subsetting to medium-to-highly expressed genes...")
-  txps.fit <- sort(txps[names(ebt.fit)])
-  cts <- Rsamtools::countBam(Rsamtools::BamFile(bam.files),
-                             param = Rsamtools::ScanBamParam(which = txps.fit))
-  S4Vectors::mcols(txps.fit)$cts <- cts$records
-  txps.fit <- txps.fit[names(ebt.fit)]
-  ebt.fit <- ebt.fit[txps.fit$cts > minCount & txps.fit$cts < maxCount]
-  if (verbose) message(paste0(length(ebt.fit), " genes retained."))
+  txpsFit <- sort(txps[names(ebtFit)])
+  cts <- Rsamtools::countBam(Rsamtools::BamFile(bamFiles),
+                             param = Rsamtools::ScanBamParam(which = txpsFit))
+  S4Vectors::mcols(txpsFit)$cts <- cts$records
+  txpsFit <- txpsFit[names(ebtFit)]
+  ebtFit <- ebtFit[txpsFit$cts > minCount & txpsFit$cts < maxCount]
+  if (verbose) message(paste0(length(ebtFit), " genes retained."))
 
   ## Subsample genes to use for the fitting of the bias model
   if (subsample) {
-    message("Subsampling genes for fitting bias model...")
+    if (verbose) message("Subsampling genes for fitting bias model...")
     set.seed(seed)
-    ebt.fit <- ebt.fit[sample(length(ebt.fit), min(nbrSubsample, length(ebt.fit)))]
-    if (verbose) message(paste0(length(ebt.fit), " genes retained."))
+    ebtFit <- ebtFit[sample(length(ebtFit), min(nbrSubsample, length(ebtFit)))]
+    if (verbose) message(paste0(length(ebtFit), " genes retained."))
   }
 
   ## Get fragment width and read length
   message("Getting fragment widths and read lengths...")
-  m <- sort(which(sapply(ebt.fit, length) > 1))
+  m <- sort(which(sapply(ebtFit, length) > 1))
   m0 <- 0
   w <- NULL
   while(is.null(w)) {
     w <- tryCatch({
       m0 <- m0 + 1
-      alpine::getFragmentWidths(bam.files, ebt.fit[[m[m0]]])
+      alpine::getFragmentWidths(bamFiles, ebtFit[[m[m0]]])
     }, error = function(e) {
       NULL
     })
@@ -170,18 +170,18 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
   quantiles <- quantile(w, c(.025, .975))
   if (is.null(minSize)) minSize <- round(quantiles[1])
   if (is.null(maxSize)) maxSize <- round(quantiles[2])
-  readlength <- median(alpine::getReadLength(bam.files))
+  readLength <- median(alpine::getReadLength(bamFiles))
 
   ## Names of genes to retain
-  gene.names <- names(ebt.fit)
-  names(gene.names) <- gene.names
+  geneNames <- names(ebtFit)
+  names(geneNames) <- geneNames
 
   ## Build fragment types for selected genes
   if (verbose) message("Building fragment types...")
-  fragtypes <- lapply(gene.names, function(gene.name) {
-    alpine::buildFragtypes(exons = ebt.fit[[gene.name]],
+  fragtypes <- lapply(geneNames, function(geneName) {
+    alpine::buildFragtypes(exons = ebtFit[[geneName]],
                            genome = genome,
-                           readlength = readlength,
+                           readlength = readLength,
                            minsize = minSize,
                            maxsize = maxSize,
                            gc.str = FALSE)
@@ -198,13 +198,13 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
   )
 
   ## Fit bias model
-  fitpar <- lapply(bam.files, function(bf) {
-    alpine::fitBiasModels(genes = ebt.fit,
+  fitpar <- lapply(bamFiles, function(bf) {
+    alpine::fitBiasModels(genes = ebtFit,
                           bam.file = bf,
                           fragtypes = fragtypes,
                           genome = genome,
                           models = models,
-                          readlength = readlength,
+                          readlength = readLength,
                           minsize = minSize,
                           maxsize = maxSize)
   })

@@ -10,9 +10,9 @@ fitAlpineBiasModel(gtf, bam, organism, genome, genomeVersion, version,
   maxSize = NULL, verbose = FALSE)
 }
 \arguments{
-\item{gtf}{gtf file with genomic features. Preferably in Ensembl format.}
+\item{gtf}{Path to gtf file with genomic features. Preferably in Ensembl format.}
 
-\item{bam}{bam file with read alignments to the genome.}
+\item{bam}{Path to bam file with read alignments to the genome.}
 
 \item{organism}{The organism (e.g., 'Homo_sapiens'). This argument will be
 passed to \code{ensembldb::ensDbFromGtf}.}
