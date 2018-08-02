@@ -129,7 +129,7 @@ If 'covError' or 'covNA', the coverage profile could not be predicted, most like
 In both these cases, we impose a uniform coverage profile for the transcript. 
 
 ```{r}
-preds[2]
+predCovProfiles[2]
 ```
 
 # Scale transcript coverage profiles
@@ -141,24 +141,27 @@ Based on the predicted transcript coverage profiles and the estimated transcript
 txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
 
 ## Scale predicted coverages based on the estimated abundances
-txsc <- scaleTxCoverages(txCoverageProfiles = preds, 
-                         txQuants = txQuants, tx2Gene = tx2gene,
+txsc <- scaleTxCoverages(txCoverageProfiles = predCovProfiles, 
+                         txQuants = txQuants, tx2gene = tx2gene,
                          strandSpecific = TRUE, methodName = "Salmon", 
                          verbose = TRUE)
 ```
 
-`scaleTxCoverages` returns a list with three elements:
+`scaleTxCoverages` returns a list with two elements:
 
-- `scaledcovs`: 
-- `allcovs`: 
-- `quants`: 
+- `junctionCov`: A \code{tibble} with the predicted coverage for each junction,
+scaled by the estimated transcript abundances and summarized across all
+transcripts.
+- `txQuants`: A \code{tibble} with estimated transcript abundances, including
+information about whether or not the coverage profile could be predicted
+('covOK') or if a uniform coverage was imposed ('covError' or 'covNA').
 
 ```{r}
 names(txsc)
 
-head(txsc$allcovs)
+head(txsc$junctionCov)
 
-head(txsc$quants)
+head(txsc$txQuants)
 ```
 
 # Combine observed and predicted junction coverages

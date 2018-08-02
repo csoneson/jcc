@@ -23,7 +23,8 @@ reference catalog.}
 
 \item{nCores}{Integer, number of cores to use for parallel computations.}
 
-\item{tx2gene}{A \code{data.frame} with transcript-to-gene mapping.}
+\item{tx2gene}{A \code{data.frame} with transcript-to-gene mapping. Must have
+at least two columns, named \code{tx} and \code{gene}.}
 
 \item{genome}{A \code{BSgenome} object.}
 

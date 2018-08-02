@@ -14,7 +14,8 @@
 #'   \code{NULL}, coverage profiles will be estimated for all transcripts in the
 #'   reference catalog.
 #' @param nCores Integer, number of cores to use for parallel computations.
-#' @param tx2gene A \code{data.frame} with transcript-to-gene mapping.
+#' @param tx2gene A \code{data.frame} with transcript-to-gene mapping. Must have
+#'   at least two columns, named \code{tx} and \code{gene}.
 #' @param genome A \code{BSgenome} object.
 #' @param verbose Logical, whether to print progress messages.
 #'
