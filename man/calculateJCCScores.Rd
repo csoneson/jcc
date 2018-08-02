@@ -33,17 +33,21 @@ junction, and the JCC score for each gene.
 gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
                    package = "jcc")
 bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
-biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
+biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam,
+                              organism = "Homo_sapiens",
                               genome = Hsapiens, genomeVersion = "GRCh38",
-                              version = 90, minLength = 230, maxLength = 7000,
-                              minCount = 10, maxCount = 10000, subsample = TRUE,
+                              version = 90, minLength = 230,
+                              maxLength = 7000, minCount = 10,
+                              maxCount = 10000, subsample = TRUE,
                               nbrSubsample = 30, seed = 1, minSize = NULL,
                               maxSize = 220, verbose = TRUE)
 tx2gene <- readRDS(system.file("extdata/tx2gene.sub.rds", package = "jcc"))
 predCovProfiles <- predictTxCoverage(biasModel = biasMod$biasModel,
                                      exonsByTx = biasMod$exonsByTx,
-                                     bam = bam, tx2gene = tx2gene, genome = Hsapiens,
-                                     genes = c("ENSG00000070371", "ENSG00000093010"),
+                                     bam = bam, tx2gene = tx2gene,
+                                     genome = Hsapiens,
+                                     genes = c("ENSG00000070371",
+                                               "ENSG00000093010"),
                                      nCores = 1, verbose = TRUE)
 txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
 txsc <- scaleTxCoverages(txCoverageProfiles = preds,
@@ -67,7 +71,10 @@ jcc <- calculateJCCScores(junctionCovs = combCov$junctionCovs,
 
 }
 \references{
-Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
+Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction
+coverage compatibility score to quantify the reliability of transcript
+abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539
+(2018)
 }
 \author{
 Charlotte Soneson

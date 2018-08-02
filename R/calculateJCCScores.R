@@ -16,10 +16,10 @@
 #' @author Charlotte Soneson
 #'
 gthr <- function(omega, thr) {
-  sapply(omega, function(o) {
+  vapply(omega, function(o) {
     if (is.na(o) || o >= (1 - thr)) 1
     else 0
-  })
+  }, numeric(1))
 }
 
 #' Help function for JCC score calculation
@@ -46,7 +46,8 @@ gthr <- function(omega, thr) {
 #'
 junctionScore <- function(uniqreads, mmreads, predcovs, g, beta = 1, ...) {
   omega <- uniqreads/(uniqreads + mmreads)
-  omega[mmreads == 0] <- 1  ## if there are no multi-mapping reads, all reads are considered to be unique
+  omega[mmreads == 0] <- 1  ## if there are no multi-mapping reads, all
+                            ## reads are considered to be unique
   w1 <- (sum(g(omega, ...) * uniqreads)/sum(g(omega, ...) * predcovs)) ^ beta
   ## w1 can be non-numeric if all g(omega)=0 (not enough uniquely mapping reads
   ## for any junction) or if g(omega)*predCov=0 for all junctions, even if
@@ -55,7 +56,8 @@ junctionScore <- function(uniqreads, mmreads, predcovs, g, beta = 1, ...) {
   ## scale the predicted coverage (i.e., we set w1=1).
   w1[is.na(w1)] <- 1
   w1[!is.finite(w1)] <- 1
-  signif(sum(abs(w1 * g(omega, ...) * predcovs - g(omega, ...) * uniqreads))/sum(g(omega, ...) * uniqreads), 2)
+  signif(sum(abs(w1 * g(omega, ...) * predcovs - g(omega, ...) *
+                   uniqreads))/sum(g(omega, ...) * uniqreads), 2)
 }
 
 #' Help function for calculation of scaled junction coverages
@@ -82,7 +84,8 @@ junctionScore <- function(uniqreads, mmreads, predcovs, g, beta = 1, ...) {
 #'
 scaledCoverage <- function(uniqreads, mmreads, predcovs, g, beta = 1, ...) {
   omega <- uniqreads/(uniqreads + mmreads)
-  omega[mmreads == 0] <- 1  ## if there are no multi-mapping reads, all reads are considered to be unique
+  omega[mmreads == 0] <- 1  ## if there are no multi-mapping reads,
+                            ## all reads are considered to be unique
   w1 <- (sum(g(omega, ...) * uniqreads)/sum(g(omega, ...) * predcovs)) ^ beta
   ## w1 can be non-numeric if all g(omega)=0 (not enough uniquely mapping reads
   ## for any junction) or if g(omega)*predCov=0 for all junctions, even if
@@ -118,24 +121,31 @@ scaledCoverage <- function(uniqreads, mmreads, predcovs, g, beta = 1, ...) {
 #' @export
 #'
 #' @references
-#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
+#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction
+#' coverage compatibility score to quantify the reliability of transcript
+#' abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539
+#' (2018)
 #'
 #' @examples
 #' \dontrun{
 #' gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
 #'                    package = "jcc")
 #' bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
-#' biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
+#' biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam,
+#'                               organism = "Homo_sapiens",
 #'                               genome = Hsapiens, genomeVersion = "GRCh38",
-#'                               version = 90, minLength = 230, maxLength = 7000,
-#'                               minCount = 10, maxCount = 10000, subsample = TRUE,
+#'                               version = 90, minLength = 230,
+#'                               maxLength = 7000, minCount = 10,
+#'                               maxCount = 10000, subsample = TRUE,
 #'                               nbrSubsample = 30, seed = 1, minSize = NULL,
 #'                               maxSize = 220, verbose = TRUE)
 #' tx2gene <- readRDS(system.file("extdata/tx2gene.sub.rds", package = "jcc"))
 #' predCovProfiles <- predictTxCoverage(biasModel = biasMod$biasModel,
 #'                                      exonsByTx = biasMod$exonsByTx,
-#'                                      bam = bam, tx2gene = tx2gene, genome = Hsapiens,
-#'                                      genes = c("ENSG00000070371", "ENSG00000093010"),
+#'                                      bam = bam, tx2gene = tx2gene,
+#'                                      genome = Hsapiens,
+#'                                      genes = c("ENSG00000070371",
+#'                                                "ENSG00000093010"),
 #'                                      nCores = 1, verbose = TRUE)
 #' txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
 #' txsc <- scaleTxCoverages(txCoverageProfiles = preds,
@@ -157,24 +167,28 @@ scaledCoverage <- function(uniqreads, mmreads, predcovs, g, beta = 1, ...) {
 #'                           geneQuants = combCov$geneQuants)
 #' }
 #'
-#' @importFrom dplyr group_by mutate ungroup left_join distinct select
+#' @importFrom dplyr group_by mutate ungroup left_join distinct select %>%
 #'
-calculateJCCScores <- function(junctionCovs, geneQuants, mmFracThreshold = 0.25) {
+calculateJCCScores <- function(junctionCovs, geneQuants,
+                               mmFracThreshold = 0.25) {
   ## Calculate score.
   junctionCovs <- junctionCovs %>%
     dplyr::group_by(gene, method) %>%
-    dplyr::mutate(score = junctionScore(uniqreads, mmreads, predCov, g = gthr,
-                                        beta = 1, thr = mmFracThreshold)) %>%
-    dplyr::mutate(scaled.cov = scaledCoverage(uniqreads, mmreads, predCov, g = gthr,
-                                              beta = 1, thr = mmFracThreshold)) %>%
+    dplyr::mutate(jccscore = junctionScore(uniqreads, mmreads, predCov,
+                                           g = gthr, beta = 1,
+                                           thr = mmFracThreshold)) %>%
+    dplyr::mutate(scaled.cov = scaledCoverage(uniqreads, mmreads, predCov,
+                                              g = gthr, beta = 1,
+                                              thr = mmFracThreshold)) %>%
     dplyr::mutate(methodscore = paste0(method, " (", score, ")")) %>%
     dplyr::ungroup()
 
   ## Add score to gene table
   geneQuants <- dplyr::left_join(geneQuants,
-                                   junctionCovs %>% dplyr::select(gene, method, score) %>%
-                                     dplyr::distinct(),
-                                   by = c("gene", "method"))
+                                 junctionCovs %>%
+                                   dplyr::select(gene, method, jccscore) %>%
+                                   dplyr::distinct(),
+                                 by = c("gene", "method"))
 
   list(junctionCovs = junctionCovs, geneScores = geneQuants)
 }

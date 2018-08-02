@@ -40,35 +40,45 @@
 #' @export
 #'
 #' @references
-#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
+#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction
+#' coverage compatibility score to quantify the reliability of transcript
+#' abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539
+#' (2018)
 #'
 #' @examples
 #' \dontrun{
 #' gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
 #'                    package = "jcc")
 #' bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
-#' biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
+#' biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam,
+#'                               organism = "Homo_sapiens",
 #'                               genome = Hsapiens, genomeVersion = "GRCh38",
-#'                               version = 90, minLength = 230, maxLength = 7000,
-#'                               minCount = 10, maxCount = 10000, subsample = TRUE,
+#'                               version = 90, minLength = 230,
+#'                               maxLength = 7000, minCount = 10,
+#'                               maxCount = 10000, subsample = TRUE,
 #'                               nbrSubsample = 30, seed = 1, minSize = NULL,
 #'                               maxSize = 220, verbose = TRUE)
 #' tx2gene <- readRDS(system.file("extdata/tx2gene.sub.rds", package = "jcc"))
 #' predCovProfiles <- predictTxCoverage(biasModel = biasMod$biasModel,
 #'                                      exonsByTx = biasMod$exonsByTx,
-#'                                      bam = bam, tx2gene = tx2gene, genome = Hsapiens,
-#'                                      genes = c("ENSG00000070371", "ENSG00000093010"),
+#'                                      bam = bam, tx2gene = tx2gene,
+#'                                      genome = Hsapiens,
+#'                                      genes = c("ENSG00000070371",
+#'                                                "ENSG00000093010"),
 #'                                      nCores = 1, verbose = TRUE)
 #' }
 #'
 #' @importFrom alpine predictCoverage
-#' @importFrom GenomicRanges setdiff
+#' @importFrom GenomicRanges setdiff mcols
+#' @importFrom S4Vectors Rle
+#' @importFrom parallel mclapply
 #'
 predictTxCoverage <- function(biasModel, exonsByTx, bam, genes, nCores,
                               tx2gene, genome, verbose = FALSE) {
 
   ## Estimate average fragment length
-  aveFragLength <- sum(biasModel$`1`$fraglen.density$x * biasModel$`1`$fraglen.density$y/
+  aveFragLength <- sum(biasModel$`1`$fraglen.density$x *
+                         biasModel$`1`$fraglen.density$y/
                          sum(biasModel$`1`$fraglen.density$y))
 
   ## Load bam file
@@ -85,7 +95,7 @@ predictTxCoverage <- function(biasModel, exonsByTx, bam, genes, nCores,
   if (verbose) message(paste0("Predicting coverage for ",
                               length(transcripts), " transcripts..."))
 
-  res <- mclapply(transcripts, function(tx) {
+  res <- parallel::mclapply(transcripts, function(tx) {
     if (verbose) message(tx)
     ## Get transcript model
     txmod <- exonsByTx[[tx]]
@@ -104,7 +114,7 @@ predictTxCoverage <- function(biasModel, exonsByTx, bam, genes, nCores,
       } else {
         ## E.g. if there are no reads mapping to the gene locus
         ## Assume uniform coverage
-        list(covr = Rle(rep(1, sum(width(txmod)) - 1)),
+        list(covr = S4Vectors::Rle(rep(1, sum(width(txmod)) - 1)),
              note = "covNA")
       }
     },
@@ -112,7 +122,7 @@ predictTxCoverage <- function(biasModel, exonsByTx, bam, genes, nCores,
       print(paste(c(tx, e), collapse = ": "))
       ## E.g. if the transcript is shorter than the fragment length
       ## Assume uniform coverage
-      list(covr = Rle(rep(1, sum(width(txmod)) - 1)),
+      list(covr = S4Vectors::Rle(rep(1, sum(width(txmod)) - 1)),
            note = "covError")
     })
 
@@ -125,12 +135,13 @@ predictTxCoverage <- function(biasModel, exonsByTx, bam, genes, nCores,
     if (all(strand(txmods) == "+")) {
       junctionpos <- cumsum(width(txmods))
       junctionpos <- junctionpos[-length(junctionpos)]
-      mcols(junctions)$pred.cov <- as.numeric(m)[junctionpos]
+      GenomicRanges::mcols(junctions)$pred.cov <- as.numeric(m)[junctionpos]
       strand <- "+"
     } else if (all(strand(txmods) == "-")) {
       junctionpos <- cumsum(width(rev(txmods)))
       junctionpos <- junctionpos[-length(junctionpos)]
-      mcols(junctions)$pred.cov <- rev(as.numeric(m)[junctionpos])
+      GenomicRanges::mcols(junctions)$pred.cov <-
+        rev(as.numeric(m)[junctionpos])
       strand <- "-"
     } else {
       strand <- "mixed"

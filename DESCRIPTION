@@ -6,7 +6,7 @@ Author: Charlotte Soneson and Michael I Love
 Maintainer: Charlotte Soneson <charlottesoneson@gmail.com>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: GenomicFeatures,
@@ -16,8 +16,13 @@ Imports: GenomicFeatures,
     Rsamtools,
     GenomicRanges,
     dplyr,
-    alpine
+    alpine,
+    stats,
+    parallel
 RoxygenNote: 6.0.1
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    BiocStyle,
+    BSgenome.Hsapiens.NCBI.GRCh38
 VignetteBuilder: knitr
+biocViews: RNASeq, Coverage, Transcriptomics

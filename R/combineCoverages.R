@@ -10,41 +10,45 @@
 #' @param junctionCounts A \code{data.frame} with observed junction coverages.
 #'   Should have columns \code{seqnames}, \code{start}, \code{end},
 #'   \code{strand}, \code{uniqreads} and \code{mmreads}.
-#' @param junctionPredCov A \code{data.frame} with predicted junction coverages.
+#' @param junctionPredCovs A \code{data.frame} with predicted junction
+#'   coverages.
 #' @param txQuants A \code{data.frame} with estimated transcript abundances.
 #'
-#' @return A list with three elements:
-#' \describe{
-#' \item{\code{junctionCovs}:}{A \code{GRanges} object with predicted and
-#' observed junction coverages.}
-#' \item{\code{txQuants}:}{A \code{tibble} with estimated transcript
-#' abundances.}
-#' \item{\code{geneQuants}:}{A \code{tibble} with summarized gene abundances.}
-#' }
+#' @return A list with three elements: \describe{ \item{\code{junctionCovs}:}{A
+#'   \code{GRanges} object with predicted and observed junction coverages.}
+#'   \item{\code{txQuants}:}{A \code{tibble} with estimated transcript
+#'   abundances.} \item{\code{geneQuants}:}{A \code{tibble} with summarized gene
+#'   abundances.} }
 #'
 #' @author Charlotte Soneson
 #'
 #' @export
 #'
-#' @references
-#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
+#' @references Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD:
+#' A junction coverage compatibility score to quantify the reliability of
+#' transcript abundance estimates and annotation catalogs. bioRxiv
+#' doi:10.1101/378539 (2018)
 #'
 #' @examples
 #' \dontrun{
 #' gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
 #'                    package = "jcc")
 #' bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
-#' biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
+#' biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam,
+#'                               organism = "Homo_sapiens",
 #'                               genome = Hsapiens, genomeVersion = "GRCh38",
-#'                               version = 90, minLength = 230, maxLength = 7000,
-#'                               minCount = 10, maxCount = 10000, subsample = TRUE,
+#'                               version = 90, minLength = 230,
+#'                               maxLength = 7000, minCount = 10,
+#'                               maxCount = 10000, subsample = TRUE,
 #'                               nbrSubsample = 30, seed = 1, minSize = NULL,
 #'                               maxSize = 220, verbose = TRUE)
 #' tx2gene <- readRDS(system.file("extdata/tx2gene.sub.rds", package = "jcc"))
 #' predCovProfiles <- predictTxCoverage(biasModel = biasMod$biasModel,
 #'                                      exonsByTx = biasMod$exonsByTx,
-#'                                      bam = bam, tx2gene = tx2gene, genome = Hsapiens,
-#'                                      genes = c("ENSG00000070371", "ENSG00000093010"),
+#'                                      bam = bam, tx2gene = tx2gene,
+#'                                      genome = Hsapiens,
+#'                                      genes = c("ENSG00000070371",
+#'                                                "ENSG00000093010"),
 #'                                      nCores = 1, verbose = TRUE)
 #' txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
 #' txsc <- scaleTxCoverages(txCoverageProfiles = preds,
@@ -65,7 +69,7 @@
 #' }
 #'
 #' @importFrom dplyr summarize mutate select ungroup group_by left_join distinct
-#'   arrange filter
+#'   arrange filter everything
 #'
 combineCoverages <- function(junctionCounts, junctionPredCovs,
                              txQuants) {
@@ -83,8 +87,11 @@ combineCoverages <- function(junctionCounts, junctionPredCovs,
   ## Process predicted junction counts
   junctionPredCovs <- junctionPredCovs %>%
     dplyr::group_by(seqnames, start, end, gene) %>%
-    dplyr::mutate(transcript = paste(unique(strsplit(paste(unique(transcript), collapse = ","),
-                                                     ",")[[1]]), collapse = ",")) %>% ## to make sure we have the same transcript combination for a given junction across all methods
+    dplyr::mutate(transcript = paste(unique(strsplit(
+      paste(unique(transcript), collapse = ","),
+      ",")[[1]]), collapse = ",")) %>% ## to make sure we have the same
+                                       ## transcript combination for a given
+                                       ## junction across all methods
     dplyr::ungroup() %>%
     dplyr::mutate(predCov = replace(predCov, is.na(predCov), 0)) %>%
     dplyr::left_join(jcov, by = c("seqnames", "start", "end", "strand")) %>%
@@ -101,7 +108,7 @@ combineCoverages <- function(junctionCounts, junctionPredCovs,
     dplyr::ungroup()
 
   junctionPredCovs <- junctionPredCovs %>% dplyr::left_join(j0) %>%
-    dplyr::select(junctionid, everything(), transcript)
+    dplyr::select(junctionid, dplyr::everything(), transcript)
 
   geneQuants <- txQuants %>% dplyr::group_by(gene, method) %>%
     dplyr::mutate(TPMrel = TPM/sum(TPM)) %>%
@@ -110,18 +117,24 @@ combineCoverages <- function(junctionCounts, junctionPredCovs,
                      TPM = sum(TPM),
                      nbr_expressed_transcripts = sum(TPM > 0),
                      nbr_expressed_transcripts_5p = sum(TPMrel > 0.05),
-                     covOKfraction = length(which(covNote == "covOK"))/length(covNote)) %>%
+                     covOKfraction = length(which(covNote == "covOK"))/
+                       length(covNote)) %>%
     dplyr::ungroup()
 
-  totjunctionreads <- junctionPredCovs %>% dplyr::filter(method == method[1]) %>%
+  totjunctionreads <- junctionPredCovs %>%
+    dplyr::filter(method == method[1]) %>%
     dplyr::select(gene, uniqreads, mmreads) %>%
     dplyr::group_by(gene) %>% dplyr::summarize(uniqjuncreads = sum(uniqreads),
                                                mmjuncreads = sum(mmreads))
   geneQuants <- dplyr::left_join(geneQuants, totjunctionreads, by = "gene") %>%
-    dplyr::mutate(uniqjuncreads = replace(uniqjuncreads, is.na(uniqjuncreads), 0)) %>%
-    dplyr::mutate(mmjuncreads = replace(mmjuncreads, is.na(mmjuncreads), 0)) %>%
-    dplyr::mutate(uniqjuncfraction = uniqjuncreads/(uniqjuncreads + mmjuncreads)) %>%
-    dplyr::mutate(uniqjuncfraction = replace(uniqjuncfraction, is.na(uniqjuncfraction), 1))
+    dplyr::mutate(uniqjuncreads = replace(uniqjuncreads,
+                                          is.na(uniqjuncreads), 0)) %>%
+    dplyr::mutate(mmjuncreads = replace(mmjuncreads,
+                                        is.na(mmjuncreads), 0)) %>%
+    dplyr::mutate(uniqjuncfraction =
+                    uniqjuncreads/(uniqjuncreads + mmjuncreads)) %>%
+    dplyr::mutate(uniqjuncfraction = replace(uniqjuncfraction,
+                                             is.na(uniqjuncfraction), 1))
 
   ## Add number of junctions per gene (from the junction summary). If a gene is
   ## not in the junction summary, it means that it doesn't have any annotated

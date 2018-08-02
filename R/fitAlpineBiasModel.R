@@ -2,11 +2,12 @@
 #'
 #' This function provides a wrapper around some of the functions from the
 #' \code{alpine} package. Given a gtf file and a bam file with reads aligned to
-#' the genome, it will find single-isoform genes (with lengths and expressin
+#' the genome, it will find single-isoform genes (with lengths and expression
 #' levels within given ranges) and use the observed read coverages to fit a
 #' fragment bias model.
 #'
-#' @param gtf Path to gtf file with genomic features. Preferably in Ensembl format.
+#' @param gtf Path to gtf file with genomic features. Preferably in Ensembl
+#'   format.
 #' @param bam Path to bam file with read alignments to the genome.
 #' @param genome A \code{BSgenome} object.
 #' @param organism The organism (e.g., 'Homo_sapiens'). This argument will be
@@ -32,29 +33,31 @@
 #'   provided data.
 #' @param verbose Logical, whether to print progress messages.
 #'
-#' @return A list with three elements:
-#' \describe{
-#' \item{\code{biasModel}:}{The fitted fragment bias model.}
-#' \item{\code{exonsByTx}:}{A \code{GRangesList} object with exons grouped by transcript.}
-#' \item{\code{transcripts}:}{A \code{GRanges} object with all the reference transcripts.}
-#' }
+#' @return A list with three elements: \describe{ \item{\code{biasModel}:}{The
+#'   fitted fragment bias model.} \item{\code{exonsByTx}:}{A \code{GRangesList}
+#'   object with exons grouped by transcript.} \item{\code{transcripts}:}{A
+#'   \code{GRanges} object with all the reference transcripts.} }
 #'
 #' @author Charlotte Soneson, Michael I Love
 #'
 #' @export
 #'
-#' @references
-#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018).
+#' @references Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD:
+#' A junction coverage compatibility score to quantify the reliability of
+#' transcript abundance estimates and annotation catalogs. bioRxiv
+#' doi:10.1101/378539 (2018).
 #'
 #' @examples
 #' \dontrun{
 #' gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
 #'                    package = "jcc")
 #' bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
-#' biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
+#' biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam,
+#'                               organism = "Homo_sapiens",
 #'                               genome = Hsapiens, genomeVersion = "GRCh38",
-#'                               version = 90, minLength = 230, maxLength = 7000,
-#'                               minCount = 10, maxCount = 10000, subsample = TRUE,
+#'                               version = 90, minLength = 230,
+#'                               maxLength = 7000, minCount = 10,
+#'                               maxCount = 10000, subsample = TRUE,
 #'                               nbrSubsample = 30, seed = 1, minSize = NULL,
 #'                               maxSize = 220, verbose = TRUE)
 #' }
@@ -64,12 +67,15 @@
 #' @importFrom S4Vectors DataFrame mcols
 #' @importFrom GenomeInfoDb keepStandardChromosomes
 #' @importFrom Rsamtools countBam BamFile ScanBamParam
-#' @importFrom alpine getFragmentWidths buildFragtypes fitBiasModels getReadLength
+#' @importFrom alpine getFragmentWidths buildFragtypes fitBiasModels
+#'   getReadLength
+#' @importFrom stats quantile median
 #'
 fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
                                version, minLength = 600, maxLength = 7000,
-                               minCount = 500, maxCount = 10000, subsample = TRUE,
-                               nbrSubsample = 200, seed = 1, minSize = NULL,
+                               minCount = 500, maxCount = 10000,
+                               subsample = TRUE, nbrSubsample = 200,
+                               seed = 1, minSize = NULL,
                                maxSize = NULL, verbose = FALSE) {
 
   ## Define the temporary directory where the ensDb object will be saved
@@ -81,7 +87,8 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
     tryCatch({
       ensembldb::ensDbFromGtf(gtf, path = tmpdir, organism = organism,
                               genomeVersion = genomeVersion, version = version)
-      ensembldb::EnsDb(paste0(tmpdir, "/", gsub("gtf", "sqlite", basename(gtf))))
+      ensembldb::EnsDb(paste0(tmpdir, "/", gsub("gtf", "sqlite",
+                                                basename(gtf))))
     }, error = function(e) {
       GenomicFeatures::makeTxDbFromGFF(gtf, format = "gtf",
                                        organism = gsub("_", " ", organism))
@@ -90,10 +97,14 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
   ## Get list of transcripts
   if (verbose) message("Getting list of transcripts...")
   if (class(txdb) == "EnsDb") {
-    txdf <- GenomicFeatures::transcripts(txdb, return.type = "DataFrame")  ## data frame format
-    txps <- GenomicFeatures::transcripts(txdb)  ## GRanges format
+    ## data frame format
+    txdf <- GenomicFeatures::transcripts(txdb, return.type = "DataFrame")
+    ## GRanges format
+    txps <- GenomicFeatures::transcripts(txdb)
   } else {
-    txps <- GenomicFeatures::transcripts(txdb, columns = c("tx_name", "gene_id"), use.names = TRUE)
+    txps <- GenomicFeatures::transcripts(txdb,
+                                         columns = c("tx_name", "gene_id"),
+                                         use.names = TRUE)
     txps$gene_id <- unlist(txps$gene_id)
     txdf <- S4Vectors::DataFrame(tx_id = as.character(txps$tx_name),
                                  gene_id = as.character(unlist(txps$gene_id)),
@@ -114,14 +125,16 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
   if (verbose) message("Selecting genes with a single isoform...")
   tab <- table(txdf$gene_id)
   oneIsoGenes <- names(tab)[tab == 1]
-  if (verbose) message(paste0(length(oneIsoGenes), " single-isoform genes found."))
+  if (verbose) message(paste0(length(oneIsoGenes),
+                              " single-isoform genes found."))
 
   ## Get transcript names for genes with a single isoform
   oneIsoTxs <- txdf$tx_id[txdf$gene_id %in% oneIsoGenes]
 
   ## Extract transcripts from one-isoform genes for use in fitting bias model
   ebtFit <- ebt0[oneIsoTxs]
-  ebtFit <- GenomeInfoDb::keepStandardChromosomes(ebtFit, pruning.mode = "coarse")
+  ebtFit <- GenomeInfoDb::keepStandardChromosomes(ebtFit,
+                                                  pruning.mode = "coarse")
 
   ## Filter short genes and long genes
   if (verbose) message("Filtering out too short and too long transcripts...")
@@ -156,7 +169,7 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
 
   ## Get fragment width and read length
   message("Getting fragment widths and read lengths...")
-  m <- sort(which(sapply(ebtFit, length) > 1))
+  m <- sort(which(vapply(ebtFit, length, numeric(1)) > 1))
   m0 <- 0
   w <- NULL
   while(is.null(w)) {
@@ -167,10 +180,10 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
       NULL
     })
   }
-  quantiles <- quantile(w, c(.025, .975))
+  quantiles <- stats::quantile(w, c(.025, .975))
   if (is.null(minSize)) minSize <- round(quantiles[1])
   if (is.null(maxSize)) maxSize <- round(quantiles[2])
-  readLength <- median(alpine::getReadLength(bamFiles))
+  readLength <- stats::median(alpine::getReadLength(bamFiles))
 
   ## Names of genes to retain
   geneNames <- names(ebtFit)

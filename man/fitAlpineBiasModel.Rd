@@ -10,7 +10,8 @@ fitAlpineBiasModel(gtf, bam, organism, genome, genomeVersion, version,
   maxSize = NULL, verbose = FALSE)
 }
 \arguments{
-\item{gtf}{Path to gtf file with genomic features. Preferably in Ensembl format.}
+\item{gtf}{Path to gtf file with genomic features. Preferably in Ensembl
+format.}
 
 \item{bam}{Path to bam file with read alignments to the genome.}
 
@@ -49,17 +50,15 @@ provided data.}
 \item{verbose}{Logical, whether to print progress messages.}
 }
 \value{
-A list with three elements:
-\describe{
-\item{\code{biasModel}:}{The fitted fragment bias model.}
-\item{\code{exonsByTx}:}{A \code{GRangesList} object with exons grouped by transcript.}
-\item{\code{transcripts}:}{A \code{GRanges} object with all the reference transcripts.}
-}
+A list with three elements: \describe{ \item{\code{biasModel}:}{The
+  fitted fragment bias model.} \item{\code{exonsByTx}:}{A \code{GRangesList}
+  object with exons grouped by transcript.} \item{\code{transcripts}:}{A
+  \code{GRanges} object with all the reference transcripts.} }
 }
 \description{
 This function provides a wrapper around some of the functions from the
 \code{alpine} package. Given a gtf file and a bam file with reads aligned to
-the genome, it will find single-isoform genes (with lengths and expressin
+the genome, it will find single-isoform genes (with lengths and expression
 levels within given ranges) and use the observed read coverages to fit a
 fragment bias model.
 }
@@ -68,17 +67,22 @@ fragment bias model.
 gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
                    package = "jcc")
 bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
-biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
+biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam,
+                              organism = "Homo_sapiens",
                               genome = Hsapiens, genomeVersion = "GRCh38",
-                              version = 90, minLength = 230, maxLength = 7000,
-                              minCount = 10, maxCount = 10000, subsample = TRUE,
+                              version = 90, minLength = 230,
+                              maxLength = 7000, minCount = 10,
+                              maxCount = 10000, subsample = TRUE,
                               nbrSubsample = 30, seed = 1, minSize = NULL,
                               maxSize = 220, verbose = TRUE)
 }
 
 }
 \references{
-Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018).
+Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD:
+A junction coverage compatibility score to quantify the reliability of
+transcript abundance estimates and annotation catalogs. bioRxiv
+doi:10.1101/378539 (2018).
 }
 \author{
 Charlotte Soneson, Michael I Love

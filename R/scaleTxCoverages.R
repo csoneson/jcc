@@ -26,9 +26,9 @@
 #'
 #' @return A list with two elements:
 #' \describe{
-#' \item{\code{junctionPredCovs}:}{A \code{tibble} with the predicted coverage for
-#' each junction, scaled by the estimated transcript abundances and summarized
-#' across all transcripts.}
+#' \item{\code{junctionPredCovs}:}{A \code{tibble} with the predicted coverage
+#' for each junction, scaled by the estimated transcript abundances and
+#' summarized across all transcripts.}
 #' \item{\code{txQuants}:}{A \code{tibble} with estimated transcript abundances,
 #' including information about whether or not the coverage profile could be
 #' predicted ('covOK') or if a uniform coverage was imposed ('covError' or
@@ -40,24 +40,31 @@
 #' @export
 #'
 #' @references
-#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
+#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction
+#' coverage compatibility score to quantify the reliability of transcript
+#' abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539
+#' (2018)
 #'
 #' @examples
 #' \dontrun{
 #' gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
 #'                    package = "jcc")
 #' bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
-#' biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
+#' biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam,
+#'                               organism = "Homo_sapiens",
 #'                               genome = Hsapiens, genomeVersion = "GRCh38",
-#'                               version = 90, minLength = 230, maxLength = 7000,
-#'                               minCount = 10, maxCount = 10000, subsample = TRUE,
+#'                               version = 90, minLength = 230,
+#'                               maxLength = 7000, minCount = 10,
+#'                               maxCount = 10000, subsample = TRUE,
 #'                               nbrSubsample = 30, seed = 1, minSize = NULL,
 #'                               maxSize = 220, verbose = TRUE)
 #' tx2gene <- readRDS(system.file("extdata/tx2gene.sub.rds", package = "jcc"))
 #' predCovProfiles <- predictTxCoverage(biasModel = biasMod$biasModel,
 #'                                      exonsByTx = biasMod$exonsByTx,
-#'                                      bam = bam, tx2gene = tx2gene, genome = Hsapiens,
-#'                                      genes = c("ENSG00000070371", "ENSG00000093010"),
+#'                                      bam = bam, tx2gene = tx2gene,
+#'                                      genome = Hsapiens,
+#'                                      genes = c("ENSG00000070371",
+#'                                                "ENSG00000093010"),
 #'                                      nCores = 1, verbose = TRUE)
 #' txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
 #' txsc <- scaleTxCoverages(txCoverageProfiles = preds,
@@ -66,7 +73,8 @@
 #'                          verbose = TRUE)
 #' }
 #'
-#' @importFrom dplyr mutate group_by ungroup left_join select distinct select rename
+#' @importFrom dplyr mutate group_by ungroup left_join select distinct select
+#'   rename
 #'
 scaleTxCoverages <- function(txCoverageProfiles, txQuants, tx2gene,
                              strandSpecific, methodName, verbose = FALSE) {
@@ -82,9 +90,11 @@ scaleTxCoverages <- function(txCoverageProfiles, txQuants, tx2gene,
   scaledcovs <- lapply(transcripts, function(tx) {
     tryCatch({
       ab <- txQuants$count[txQuants$transcript == tx]
-      if (length(ab) == 0 || is.na(ab)) ab <- 0  ## if the transcript is not present in the quantification file
+      ## if the transcript is not present in the quantification file
+      if (length(ab) == 0 || is.na(ab)) ab <- 0
       m <- txCoverageProfiles[[tx]]$junctionCov
-      m$pred.cov <- m$pred.cov / max(1e-10, sum(txCoverageProfiles[[tx]]$predCov)) *
+      m$pred.cov <- m$pred.cov / max(1e-10,
+                                     sum(txCoverageProfiles[[tx]]$predCov)) *
         ab * txCoverageProfiles[[tx]]$aveFragLength
       as.data.frame(m) %>% dplyr::mutate(transcript = tx)
     }, error = function(e) NULL)
@@ -96,14 +106,15 @@ scaleTxCoverages <- function(txCoverageProfiles, txQuants, tx2gene,
     junctionPredCovs$strand <- "*"
   }
 
-  ## Sum coverages of the same junction from different transcripts. Each junction
-  ## is present once per gene it is included in.
+  ## Sum coverages of the same junction from different transcripts. Each
+  ## junction is present once per gene it is included in.
   junctionPredCovs <- junctionPredCovs %>%
     dplyr::group_by(seqnames, start, end, strand) %>%
     dplyr::mutate(pred.cov = sum(pred.cov)) %>%
     dplyr::rename(predCov = pred.cov) %>%
     dplyr::ungroup() %>%
-    dplyr::left_join(tx2gene %>% dplyr::select(tx, gene), by = c("transcript" = "tx")) %>%
+    dplyr::left_join(tx2gene %>% dplyr::select(tx, gene),
+                     by = c("transcript" = "tx")) %>%
     dplyr::group_by(seqnames, start, end, strand, gene) %>%
     dplyr::mutate(transcript = paste(transcript, collapse = ",")) %>%
     dplyr::ungroup() %>%
@@ -111,9 +122,9 @@ scaleTxCoverages <- function(txCoverageProfiles, txQuants, tx2gene,
     dplyr::mutate(method = methodName)
 
   ## Get coverage "note" for each transcript
-  covNotes <- sapply(transcripts, function(tx) {
+  covNotes <- vapply(transcripts, function(tx) {
     txCoverageProfiles[[tx]]$note
-  })
+  }, character(1))
 
   ## Add gene info to transcript quant table
   txQuants <- txQuants %>% dplyr::left_join(tx2gene %>% dplyr::select(tx, gene),
@@ -121,7 +132,8 @@ scaleTxCoverages <- function(txCoverageProfiles, txQuants, tx2gene,
     dplyr::mutate(method = methodName) %>%
     dplyr::inner_join(data.frame(transcript = names(covNotes),
                                  covNote = covNotes,
-                                 stringsAsFactors = FALSE), by = "transcript") %>%
+                                 stringsAsFactors = FALSE),
+                      by = "transcript") %>%
     dplyr::select(transcript, gene, count, TPM, method, covNote)
 
   list(junctionPredCovs = junctionPredCovs, txQuants = txQuants)

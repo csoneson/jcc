@@ -11,19 +11,17 @@ combineCoverages(junctionCounts, junctionPredCovs, txQuants)
 Should have columns \code{seqnames}, \code{start}, \code{end},
 \code{strand}, \code{uniqreads} and \code{mmreads}.}
 
-\item{txQuants}{A \code{data.frame} with estimated transcript abundances.}
+\item{junctionPredCovs}{A \code{data.frame} with predicted junction
+coverages.}
 
-\item{junctionPredCov}{A \code{data.frame} with predicted junction coverages.}
+\item{txQuants}{A \code{data.frame} with estimated transcript abundances.}
 }
 \value{
-A list with three elements:
-\describe{
-\item{\code{junctionCovs}:}{A \code{GRanges} object with predicted and
-observed junction coverages.}
-\item{\code{txQuants}:}{A \code{tibble} with estimated transcript
-abundances.}
-\item{\code{geneQuants}:}{A \code{tibble} with summarized gene abundances.}
-}
+A list with three elements: \describe{ \item{\code{junctionCovs}:}{A
+  \code{GRanges} object with predicted and observed junction coverages.}
+  \item{\code{txQuants}:}{A \code{tibble} with estimated transcript
+  abundances.} \item{\code{geneQuants}:}{A \code{tibble} with summarized gene
+  abundances.} }
 }
 \description{
 This function combines predicted junction coverages (from
@@ -38,17 +36,21 @@ reads and multimapping reads spanning each junction.
 gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
                    package = "jcc")
 bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
-biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
+biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam,
+                              organism = "Homo_sapiens",
                               genome = Hsapiens, genomeVersion = "GRCh38",
-                              version = 90, minLength = 230, maxLength = 7000,
-                              minCount = 10, maxCount = 10000, subsample = TRUE,
+                              version = 90, minLength = 230,
+                              maxLength = 7000, minCount = 10,
+                              maxCount = 10000, subsample = TRUE,
                               nbrSubsample = 30, seed = 1, minSize = NULL,
                               maxSize = 220, verbose = TRUE)
 tx2gene <- readRDS(system.file("extdata/tx2gene.sub.rds", package = "jcc"))
 predCovProfiles <- predictTxCoverage(biasModel = biasMod$biasModel,
                                      exonsByTx = biasMod$exonsByTx,
-                                     bam = bam, tx2gene = tx2gene, genome = Hsapiens,
-                                     genes = c("ENSG00000070371", "ENSG00000093010"),
+                                     bam = bam, tx2gene = tx2gene,
+                                     genome = Hsapiens,
+                                     genes = c("ENSG00000070371",
+                                               "ENSG00000093010"),
                                      nCores = 1, verbose = TRUE)
 txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
 txsc <- scaleTxCoverages(txCoverageProfiles = preds,
@@ -70,7 +72,10 @@ combCov <- combineCoverages(junctionCounts = jcov,
 
 }
 \references{
-Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
+Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD:
+A junction coverage compatibility score to quantify the reliability of
+transcript abundance estimates and annotation catalogs. bioRxiv
+doi:10.1101/378539 (2018)
 }
 \author{
 Charlotte Soneson
