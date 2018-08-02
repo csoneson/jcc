@@ -268,6 +268,29 @@ head(jcc$geneScores)
 - `junctionCovs`: 
 - `geneScores`: 
 
+# Plot observed and predicted junction coverages
+
+```{r}
+selGene <- "ENSG00000070371"
+ggplot2::ggplot(as.data.frame(jcc$junctionCovs) %>%
+                  dplyr::filter(gene == selGene), 
+                ggplot2::aes(x = uniqreads, y = scaledCov)) + 
+  ggplot2::geom_abline(intercept = 0, slope = 1) + 
+  ggplot2::geom_point(size = 5) + 
+  ggplot2::theme_bw() + 
+  ggplot2::ggtitle(unique(jcc$junctionCovs %>% dplyr::filter(gene == selGene) %>%
+                            dplyr::pull(methodscore)))
+```
+
+
+```{r, fig.width = 12, fig.height = 10}
+bwFile <- system.file("extdata/reads.chr22.bw", package = "jcc")
+plotGeneSummary(gtf = gtf, junctionCovs = jcc$junctionCovs, 
+                useGene = "ENSG00000070371", bwFile = bwFile,
+                txQuants = combCov$txQuants, txCol = "transcript_id",
+                geneCol = "gene_id", exonCol = "exon_id")
+```
+
 # Session info
 
 ```{r}

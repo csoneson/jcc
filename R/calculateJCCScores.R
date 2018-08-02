@@ -177,9 +177,9 @@ calculateJCCScores <- function(junctionCovs, geneQuants,
     dplyr::mutate(jccscore = junctionScore(uniqreads, mmreads, predCov,
                                            g = gthr, beta = 1,
                                            thr = mmFracThreshold)) %>%
-    dplyr::mutate(scaled.cov = scaledCoverage(uniqreads, mmreads, predCov,
-                                              g = gthr, beta = 1,
-                                              thr = mmFracThreshold)) %>%
+    dplyr::mutate(scaledCov = scaledCoverage(uniqreads, mmreads, predCov,
+                                             g = gthr, beta = 1,
+                                             thr = mmFracThreshold)) %>%
     dplyr::mutate(methodscore = paste0(method, " (", jccscore, ")")) %>%
     dplyr::ungroup()
 

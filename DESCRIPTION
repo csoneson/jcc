@@ -18,11 +18,19 @@ Imports: GenomicFeatures,
     dplyr,
     alpine,
     stats,
-    parallel
+    parallel,
+    Gviz,
+    scatterpie,
+    cowplot,
+    ggplot2,
+    rtracklayer,
+    grDevices,
+    IRanges
 RoxygenNote: 6.0.1
 Suggests: knitr,
     rmarkdown,
     BiocStyle,
-    BSgenome.Hsapiens.NCBI.GRCh38
+    BSgenome.Hsapiens.NCBI.GRCh38,
+    ggplot2
 VignetteBuilder: knitr
 biocViews: RNASeq, Coverage, Transcriptomics
