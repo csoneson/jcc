@@ -26,7 +26,7 @@ scaleTxCoverages <- function(txCoverageProfiles, txQuants, tx2Gene,
                              strandSpecific, methodName, verbose = FALSE) {
 
   predcovs <- txCoverageProfiles
-  quants <- txQuants
+  quants <- txQuants %>% dplyr::select(transcript, count, TPM)
   tx2gene <- tx2Gene
 
   transcripts <- names(predcovs)

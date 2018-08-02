@@ -16,6 +16,8 @@ scaleTxCoverages(txCoverageProfiles, txQuants, tx2Gene, strandSpecific,
 
 \item{strandSpecific}{Logical, is the data strand specific?}
 
+\item{methodName}{Name to use for the abundance estimation method.}
+
 \item{verbose}{Logical, should progress be written out?}
 }
 \value{

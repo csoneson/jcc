@@ -1,36 +1,63 @@
 #' Fit fragment bias model with alpine
 #'
-#' Description
+#' This function provides a wrapper around some of the functions from the
+#' \code{alpine} package. Given a gtf file and a bam file with reads aligned to
+#' the genome, it will find single-isoform genes (with lengths and expressin
+#' levels within given ranges) and use the observed read coverages to fit a
+#' fragment bias model.
 #'
-#' @param gtf gtf file with genomic features. Preferably in Ensembl format
-#' @param bam bam file with read alignments to the genome
-#' @param organism The organism
-#' @param genome A BSgenome object
-#' @param genomeVersion Genome version
-#' @param version version
+#' @param gtf gtf file with genomic features. Preferably in Ensembl format.
+#' @param bam bam file with read alignments to the genome.
+#' @param genome A \code{BSgenome} object.
+#' @param organism The organism (e.g., 'Homo_sapiens'). This argument will be
+#'   passed to \code{ensembldb::ensDbFromGtf}.
+#' @param genomeVersion Genome version (e.g., 'GRCh38'). This argument will be
+#'   passed to \code{ensembldb::ensDbFromGtf}.
+#' @param version The version of the reference annotation (e.g., 90). This
+#'   argument will be passed to \code{ensembldb::ensDbFromGtf}.
 #' @param minLength,maxLength Minimum and maximum length of single-isoform genes
-#'   used to fit fragment bias model
+#'   used to fit fragment bias model.
 #' @param minCount,maxCount Minimum and maximum read coverage of single-isoform
-#'   genes used to fit fragment bias model
+#'   genes used to fit fragment bias model.
 #' @param subsample Whether to subsample the set of single-isoform genes
 #'   satisfying the \code{minLength}, \code{maxLength}, \code{minCount} and
-#'   \code{maxCount} criteria before fitting fragment bias model
-#' @param nbrSubsample If \code{subsample} is \code{TRUE}, how many genes to
-#'   subsample
-#' @param minSize,maxSize Smallest and largest fragment size to consider. If any
-#'   of these is null, it is estimated from the data.
+#'   \code{maxCount} criteria before fitting the fragment bias model.
+#' @param nbrSubsample If \code{subsample} is \code{TRUE}, the number of genes
+#'   to subsample.
+#' @param seed If \code{subsample} is \code{TRUE}, the random seed to use to
+#'   ensure reproducibility.
+#' @param minSize,maxSize Smallest and largest fragment size to consider. One or
+#'   both of these can be \code{NULL}, in which case it is estimated as the 2.5
+#'   or 97.5 percentile, respectively, of estimated fragment sizes in the
+#'   provided data.
 #' @param verbose Logical, whether to print progress messages.
 #'
-#' @return
+#' @return A list with three elements:
+#' \describe{
+#' \item{\code{biasModel}:}{The fitted fragment bias model.}
+#' \item{\code{exonsByTx}:}{A \code{GRangesList} object with exons grouped by transcript.}
+#' \item{\code{transcripts}:}{A \code{GRanges} object with all the reference transcripts.}
+#' }
 #'
 #' @author Charlotte Soneson, Michael I Love
 #'
 #' @export
 #'
 #' @references
-#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
+#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018).
 #'
 #' @examples
+#' \dontrun{
+#' gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
+#' package = "jcc")
+#' bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
+#' biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
+#'                               genome = Hsapiens, genomeVersion = "GRCh38",
+#'                               version = 90, minLength = 230, maxLength = 7000,
+#'                               minCount = 10, maxCount = 10000, subsample = TRUE,
+#'                               nbrSubsample = 30, seed = 1, minSize = NULL,
+#'                               maxSize = 220, verbose = TRUE)
+#' }
 #'
 #' @importFrom GenomicFeatures makeTxDbFromGFF transcripts exonsBy
 #' @importFrom ensembldb ensDbFromGtf EnsDb exonsBy
@@ -42,8 +69,8 @@
 fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
                                version, minLength = 600, maxLength = 7000,
                                minCount = 500, maxCount = 10000, subsample = TRUE,
-                               nbrSubsample = 200, minSize = NULL, maxSize = NULL,
-                               verbose = FALSE) {
+                               nbrSubsample = 200, seed = 1, minSize = NULL,
+                               maxSize = NULL, verbose = FALSE) {
 
   ## Define the temporary directory where the ensDb object will be saved
   tmpdir <- tempdir()
@@ -101,7 +128,6 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
   min.bp <- minLength
   max.bp <- maxLength
   gene.lengths <- sum(width(ebt.fit))
-
   ebt.fit <- ebt.fit[gene.lengths > min.bp & gene.lengths < max.bp]
   if (verbose) message(paste0(length(ebt.fit), " transcripts remaining"))
 
@@ -123,7 +149,7 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
   ## Subsample genes to use for the fitting of the bias model
   if (subsample) {
     message("Subsampling genes for fitting bias model...")
-    set.seed(1)
+    set.seed(seed)
     ebt.fit <- ebt.fit[sample(length(ebt.fit), min(nbrSubsample, length(ebt.fit)))]
     if (verbose) message(paste0(length(ebt.fit), " genes retained."))
   }
@@ -154,7 +180,7 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
   if (verbose) message("Building fragment types...")
   fragtypes <- lapply(gene.names, function(gene.name) {
     alpine::buildFragtypes(exons = ebt.fit[[gene.name]],
-                           genome = Hsapiens,
+                           genome = genome,
                            readlength = readlength,
                            minsize = minSize,
                            maxsize = maxSize,
@@ -176,7 +202,7 @@ fitAlpineBiasModel <- function(gtf, bam, organism, genome, genomeVersion,
     alpine::fitBiasModels(genes = ebt.fit,
                           bam.file = bf,
                           fragtypes = fragtypes,
-                          genome = Hsapiens,
+                          genome = genome,
                           models = models,
                           readlength = readlength,
                           minsize = minSize,
