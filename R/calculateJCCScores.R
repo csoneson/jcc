@@ -148,8 +148,8 @@ scaledCoverage <- function(uniqreads, mmreads, predcovs, g, beta = 1, ...) {
 #'                                                "ENSG00000093010"),
 #'                                      nCores = 1, verbose = TRUE)
 #' txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
-#' txsc <- scaleTxCoverages(txCoverageProfiles = preds,
-#'                          txQuants = txQuants, tx2Gene = tx2gene,
+#' txsc <- scaleTxCoverages(txCoverageProfiles = predCovProfiles,
+#'                          txQuants = txQuants, tx2gene = tx2gene,
 #'                          strandSpecific = TRUE, methodName = "Salmon",
 #'                          verbose = TRUE)
 #' jcov <- read.delim(system.file("extdata/sub.SJ.out.tab", package = "jcc"),
@@ -161,8 +161,8 @@ scaledCoverage <- function(uniqreads, mmreads, predcovs, g, beta = 1, ...) {
 #'  dplyr::select(seqnames, start, end, strand, uniqreads, mmreads) %>%
 #'  dplyr::mutate(seqnames = as.character(seqnames))
 #' combCov <- combineCoverages(junctionCounts = jcov,
-#'                             junctionPredCovs = txsc$allcovs,
-#'                             txQuants = txsc$quants)
+#'                             junctionPredCovs = txsc$junctionPredCovs,
+#'                             txQuants = txsc$txQuants)
 #' jcc <- calculateJCCScores(junctionCovs = combCov$junctionCovs,
 #'                           geneQuants = combCov$geneQuants)
 #' }
@@ -180,7 +180,7 @@ calculateJCCScores <- function(junctionCovs, geneQuants,
     dplyr::mutate(scaled.cov = scaledCoverage(uniqreads, mmreads, predCov,
                                               g = gthr, beta = 1,
                                               thr = mmFracThreshold)) %>%
-    dplyr::mutate(methodscore = paste0(method, " (", score, ")")) %>%
+    dplyr::mutate(methodscore = paste0(method, " (", jccscore, ")")) %>%
     dplyr::ungroup()
 
   ## Add score to gene table

@@ -72,8 +72,8 @@ predCovProfiles <- predictTxCoverage(biasModel = biasMod$biasModel,
                                                "ENSG00000093010"),
                                      nCores = 1, verbose = TRUE)
 txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
-txsc <- scaleTxCoverages(txCoverageProfiles = preds,
-                         txQuants = txQuants, tx2Gene = tx2gene,
+txsc <- scaleTxCoverages(txCoverageProfiles = predCovProfiles,
+                         txQuants = txQuants, tx2gene = tx2gene,
                          strandSpecific = TRUE, methodName = "Salmon",
                          verbose = TRUE)
 }

@@ -50,8 +50,8 @@ predCovProfiles <- predictTxCoverage(biasModel = biasMod$biasModel,
                                                "ENSG00000093010"),
                                      nCores = 1, verbose = TRUE)
 txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
-txsc <- scaleTxCoverages(txCoverageProfiles = preds,
-                         txQuants = txQuants, tx2Gene = tx2gene,
+txsc <- scaleTxCoverages(txCoverageProfiles = predCovProfiles,
+                         txQuants = txQuants, tx2gene = tx2gene,
                          strandSpecific = TRUE, methodName = "Salmon",
                          verbose = TRUE)
 jcov <- read.delim(system.file("extdata/sub.SJ.out.tab", package = "jcc"),
@@ -63,8 +63,8 @@ jcov <- read.delim(system.file("extdata/sub.SJ.out.tab", package = "jcc"),
  dplyr::select(seqnames, start, end, strand, uniqreads, mmreads) \%>\%
  dplyr::mutate(seqnames = as.character(seqnames))
 combCov <- combineCoverages(junctionCounts = jcov,
-                            junctionPredCovs = txsc$allcovs,
-                            txQuants = txsc$quants)
+                            junctionPredCovs = txsc$junctionPredCovs,
+                            txQuants = txsc$txQuants)
 jcc <- calculateJCCScores(junctionCovs = combCov$junctionCovs,
                           geneQuants = combCov$geneQuants)
 }
