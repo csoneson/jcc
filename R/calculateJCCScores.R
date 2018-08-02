@@ -49,7 +49,7 @@ junctionScore <- function(uniqreads, mmreads, predcovs, g, beta = 1, ...) {
   omega[mmreads == 0] <- 1  ## if there are no multi-mapping reads, all reads are considered to be unique
   w1 <- (sum(g(omega, ...) * uniqreads)/sum(g(omega, ...) * predcovs)) ^ beta
   ## w1 can be non-numeric if all g(omega)=0 (not enough uniquely mapping reads
-  ## for any junction) or if g(omega)*pred.cov=0 for all junctions, even if
+  ## for any junction) or if g(omega)*predCov=0 for all junctions, even if
   ## g(omega)!=0 for some of them (if the predicted coverage is 0 for a junction
   ## that has non-zero uniquely mapping reads). In both these cases, we don't
   ## scale the predicted coverage (i.e., we set w1=1).
@@ -85,7 +85,7 @@ scaledCoverage <- function(uniqreads, mmreads, predcovs, g, beta = 1, ...) {
   omega[mmreads == 0] <- 1  ## if there are no multi-mapping reads, all reads are considered to be unique
   w1 <- (sum(g(omega, ...) * uniqreads)/sum(g(omega, ...) * predcovs)) ^ beta
   ## w1 can be non-numeric if all g(omega)=0 (not enough uniquely mapping reads
-  ## for any junction) or if g(omega)*pred.cov=0 for all junctions, even if
+  ## for any junction) or if g(omega)*predCov=0 for all junctions, even if
   ## g(omega)!=0 for some of them (if the predicted coverage is 0 for a junction
   ## that has non-zero uniquely mapping reads). In both these cases, we don't
   ## scale the predicted coverage (i.e., we set w1=1).
@@ -96,17 +96,22 @@ scaledCoverage <- function(uniqreads, mmreads, predcovs, g, beta = 1, ...) {
 
 #' Calculate scaled coverages and JCC scores
 #'
-#' Function to calculate the scaled predicted junction coverage for each
+#' This function calculates the scaled predicted junction coverage for each
 #' junction, and the JCC score for each gene.
 #'
-#' @param junctionCounts data.frame with observed and predicted junction counts
-#' @param txQuantsGene data.frame with gene-level abundances
-#' @param mmfracthreshold Scalar value in [0, 1] indicating the maximal fraction
-#'   of multimapping reads a junction can have to contribute to the score.
+#' @param junctionCovs A \code{data.frame} with observed and predicted junction
+#'   counts
+#' @param geneQuants A \code{data.frame} with gene-level abundances.
+#' @param mmFracThreshold Scalar value in [0, 1] indicating the maximal fraction
+#'   of multimapping reads a junction can have and still contribute to the
+#'   score.
 #'
-#' @return A list with two elements: (i) \code{junctions}, a data.frame with
-#'   observed and predicted junction coverages; (ii) \code{genes}, a data.frame
-#'   with gene-level abundances and scores.
+#' @return A list with two elements:
+#' \describe{
+#' \item{\code{junctionCovs}:}{A \code{data.frame} with predicted and
+#' observed junction coverages.}
+#' \item{\code{geneScores}:}{A \code{data.frame} with gene scores.}
+#' }
 #'
 #' @author Charlotte Soneson
 #'
@@ -116,25 +121,60 @@ scaledCoverage <- function(uniqreads, mmreads, predcovs, g, beta = 1, ...) {
 #' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539 (2018)
 #'
 #' @examples
+#' \dontrun{
+#' gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
+#'                    package = "jcc")
+#' bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
+#' biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
+#'                               genome = Hsapiens, genomeVersion = "GRCh38",
+#'                               version = 90, minLength = 230, maxLength = 7000,
+#'                               minCount = 10, maxCount = 10000, subsample = TRUE,
+#'                               nbrSubsample = 30, seed = 1, minSize = NULL,
+#'                               maxSize = 220, verbose = TRUE)
+#' tx2gene <- readRDS(system.file("extdata/tx2gene.sub.rds", package = "jcc"))
+#' predCovProfiles <- predictTxCoverage(biasModel = biasMod$biasModel,
+#'                                      exonsByTx = biasMod$exonsByTx,
+#'                                      bam = bam, tx2gene = tx2gene, genome = Hsapiens,
+#'                                      genes = c("ENSG00000070371", "ENSG00000093010"),
+#'                                      nCores = 1, verbose = TRUE)
+#' txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
+#' txsc <- scaleTxCoverages(txCoverageProfiles = preds,
+#'                          txQuants = txQuants, tx2Gene = tx2gene,
+#'                          strandSpecific = TRUE, methodName = "Salmon",
+#'                          verbose = TRUE)
+#' jcov <- read.delim(system.file("extdata/sub.SJ.out.tab", package = "jcc"),
+#'                    header = FALSE, as.is = TRUE) %>%
+#'  setNames(c("seqnames", "start", "end", "strand", "motif", "annot",
+#'            "uniqreads", "mmreads", "maxoverhang")) %>%
+#'  dplyr::mutate(strand = replace(strand, strand == 1, "+")) %>%
+#'  dplyr::mutate(strand = replace(strand, strand == 2, "-")) %>%
+#'  dplyr::select(seqnames, start, end, strand, uniqreads, mmreads) %>%
+#'  dplyr::mutate(seqnames = as.character(seqnames))
+#' combCov <- combineCoverages(junctionCounts = jcov,
+#'                             junctionPredCovs = txsc$allcovs,
+#'                             txQuants = txsc$quants)
+#' jcc <- calculateJCCScores(junctionCovs = combCov$junctionCovs,
+#'                           geneQuants = combCov$geneQuants)
+#' }
 #'
 #' @importFrom dplyr group_by mutate ungroup left_join distinct select
 #'
-calculateJCCScores <- function(junctionCounts, txQuantsGene, mmfracthreshold = 0.25) {
+calculateJCCScores <- function(junctionCovs, geneQuants, mmFracThreshold = 0.25) {
   ## Calculate score.
-  junctionCounts <- junctionCounts %>%
+  junctionCovs <- junctionCovs %>%
     dplyr::group_by(gene, method) %>%
-    dplyr::mutate(score = junctionScore(uniqreads, mmreads, pred.cov, g = gthr,
-                                        beta = 1, thr = mmfracthreshold)) %>%
-    dplyr::mutate(scaled.cov = scaledCoverage(uniqreads, mmreads, pred.cov, g = gthr,
-                                              beta = 1, thr = mmfracthreshold)) %>%
+    dplyr::mutate(score = junctionScore(uniqreads, mmreads, predCov, g = gthr,
+                                        beta = 1, thr = mmFracThreshold)) %>%
+    dplyr::mutate(scaled.cov = scaledCoverage(uniqreads, mmreads, predCov, g = gthr,
+                                              beta = 1, thr = mmFracThreshold)) %>%
     dplyr::mutate(methodscore = paste0(method, " (", score, ")")) %>%
     dplyr::ungroup()
 
   ## Add score to gene table
-  txQuantsGene <- dplyr::left_join(txQuantsGene,
-                                   junctionCounts %>% dplyr::select(gene, method, score) %>%
+  geneQuants <- dplyr::left_join(geneQuants,
+                                   junctionCovs %>% dplyr::select(gene, method, score) %>%
                                      dplyr::distinct(),
                                    by = c("gene", "method"))
 
-  list(junctions = junctionCounts, genes = txQuantsGene)
+  list(junctionCovs = junctionCovs, geneScores = geneQuants)
 }

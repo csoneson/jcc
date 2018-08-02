@@ -30,7 +30,7 @@ output table.}
 \value{
 A list with two elements:
 \describe{
-\item{\code{junctionCov}:}{A \code{tibble} with the predicted coverage for
+\item{\code{junctionPredCovs}:}{A \code{tibble} with the predicted coverage for
 each junction, scaled by the estimated transcript abundances and summarized
 across all transcripts.}
 \item{\code{txQuants}:}{A \code{tibble} with estimated transcript abundances,
@@ -53,7 +53,7 @@ junction.
 \examples{
 \dontrun{
 gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
-package = "jcc")
+                   package = "jcc")
 bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
 biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
                               genome = Hsapiens, genomeVersion = "GRCh38",
@@ -65,7 +65,7 @@ tx2gene <- readRDS(system.file("extdata/tx2gene.sub.rds", package = "jcc"))
 predCovProfiles <- predictTxCoverage(biasModel = biasMod$biasModel,
                                      exonsByTx = biasMod$exonsByTx,
                                      bam = bam, tx2gene = tx2gene, genome = Hsapiens,
-                                     genes = c("ENSG00000070371", "ENSG00000244296"),
+                                     genes = c("ENSG00000070371", "ENSG00000093010"),
                                      nCores = 1, verbose = TRUE)
 txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
 txsc <- scaleTxCoverages(txCoverageProfiles = preds,

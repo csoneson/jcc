@@ -4,28 +4,69 @@
 \alias{combineCoverages}
 \title{Combine observed and predicted coverages}
 \usage{
-combineCoverages(junctionCounts, predictedCoverages, txQuants)
+combineCoverages(junctionCounts, junctionPredCovs, txQuants)
 }
 \arguments{
-\item{junctionCounts}{data.frame with observed junction coverages}
+\item{junctionCounts}{A \code{data.frame} with observed junction coverages.
+Should have columns \code{seqnames}, \code{start}, \code{end},
+\code{strand}, \code{uniqreads} and \code{mmreads}.}
 
-\item{predictedCoverages}{data.frame with predicted junction coverages}
+\item{txQuants}{A \code{data.frame} with estimated transcript abundances.}
 
-\item{txQuants}{data.frame with estimated transcript abundances}
+\item{junctionPredCov}{A \code{data.frame} with predicted junction coverages.}
 }
 \value{
-
+A list with three elements:
+\describe{
+\item{\code{junctionCovs}:}{A \code{GRanges} object with predicted and
+observed junction coverages.}
+\item{\code{txQuants}:}{A \code{tibble} with estimated transcript
+abundances.}
+\item{\code{geneQuants}:}{A \code{tibble} with summarized gene abundances.}
+}
 }
 \description{
-Description...
+This function combines predicted junction coverages (from
+\code{\link{scaleTxCoverages}}) and observed junction coverages (obtained
+from aligning the reads to the genome and counting the number of reads
+spanning each junction). It also summarized transcript abundances on the gene
+level and adds information about the number/fraction of uniquely mapping
+reads and multimapping reads spanning each junction.
 }
 \examples{
-jcov <- read.delim(junctioncovSTAR, header = FALSE, as.is = TRUE)
-colnames(jcov) <- c("seqnames", "start", "end", "strand", "motif", "annot",
-                    "uniqreads", "mmreads", "maxoverhang")
-jcov <- jcov \%>\% dplyr::mutate(strand = replace(strand, strand == 1, "+")) \%>\%
-  dplyr::mutate(strand = replace(strand, strand == 2, "-")) \%>\%
-  dplyr::select(seqnames, start, end, strand, uniqreads, mmreads)
+\dontrun{
+gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
+                   package = "jcc")
+bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
+biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
+                              genome = Hsapiens, genomeVersion = "GRCh38",
+                              version = 90, minLength = 230, maxLength = 7000,
+                              minCount = 10, maxCount = 10000, subsample = TRUE,
+                              nbrSubsample = 30, seed = 1, minSize = NULL,
+                              maxSize = 220, verbose = TRUE)
+tx2gene <- readRDS(system.file("extdata/tx2gene.sub.rds", package = "jcc"))
+predCovProfiles <- predictTxCoverage(biasModel = biasMod$biasModel,
+                                     exonsByTx = biasMod$exonsByTx,
+                                     bam = bam, tx2gene = tx2gene, genome = Hsapiens,
+                                     genes = c("ENSG00000070371", "ENSG00000093010"),
+                                     nCores = 1, verbose = TRUE)
+txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
+txsc <- scaleTxCoverages(txCoverageProfiles = preds,
+                         txQuants = txQuants, tx2Gene = tx2gene,
+                         strandSpecific = TRUE, methodName = "Salmon",
+                         verbose = TRUE)
+jcov <- read.delim(system.file("extdata/sub.SJ.out.tab", package = "jcc"),
+                   header = FALSE, as.is = TRUE) \%>\%
+ setNames(c("seqnames", "start", "end", "strand", "motif", "annot",
+           "uniqreads", "mmreads", "maxoverhang")) \%>\%
+ dplyr::mutate(strand = replace(strand, strand == 1, "+")) \%>\%
+ dplyr::mutate(strand = replace(strand, strand == 2, "-")) \%>\%
+ dplyr::select(seqnames, start, end, strand, uniqreads, mmreads) \%>\%
+ dplyr::mutate(seqnames = as.character(seqnames))
+combCov <- combineCoverages(junctionCounts = jcov,
+                            junctionPredCovs = txsc$allcovs,
+                            txQuants = txsc$quants)
+}
 
 }
 \references{

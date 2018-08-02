@@ -66,7 +66,7 @@ fragment bias model.
 \examples{
 \dontrun{
 gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
-package = "jcc")
+                   package = "jcc")
 bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
 biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
                               genome = Hsapiens, genomeVersion = "GRCh38",

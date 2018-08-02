@@ -45,7 +45,7 @@
 #' @examples
 #' \dontrun{
 #' gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
-#' package = "jcc")
+#'                    package = "jcc")
 #' bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
 #' biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
 #'                               genome = Hsapiens, genomeVersion = "GRCh38",
@@ -57,7 +57,7 @@
 #' predCovProfiles <- predictTxCoverage(biasModel = biasMod$biasModel,
 #'                                      exonsByTx = biasMod$exonsByTx,
 #'                                      bam = bam, tx2gene = tx2gene, genome = Hsapiens,
-#'                                      genes = c("ENSG00000070371", "ENSG00000244296"),
+#'                                      genes = c("ENSG00000070371", "ENSG00000093010"),
 #'                                      nCores = 1, verbose = TRUE)
 #' }
 #'

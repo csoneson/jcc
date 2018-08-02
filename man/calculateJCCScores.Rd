@@ -4,26 +4,66 @@
 \alias{calculateJCCScores}
 \title{Calculate scaled coverages and JCC scores}
 \usage{
-calculateJCCScores(junctionCounts, txQuantsGene, mmfracthreshold = 0.25)
+calculateJCCScores(junctionCovs, geneQuants, mmFracThreshold = 0.25)
 }
 \arguments{
-\item{junctionCounts}{data.frame with observed and predicted junction counts}
+\item{junctionCovs}{A \code{data.frame} with observed and predicted junction
+counts}
 
-\item{txQuantsGene}{data.frame with gene-level abundances}
+\item{geneQuants}{A \code{data.frame} with gene-level abundances.}
 
-\item{mmfracthreshold}{Scalar value in [0, 1] indicating the maximal fraction
-of multimapping reads a junction can have to contribute to the score.}
+\item{mmFracThreshold}{Scalar value in [0, 1] indicating the maximal fraction
+of multimapping reads a junction can have and still contribute to the
+score.}
 }
 \value{
-A list with two elements: (i) \code{junctions}, a data.frame with
-  observed and predicted junction coverages; (ii) \code{genes}, a data.frame
-  with gene-level abundances and scores.
+A list with two elements:
+\describe{
+\item{\code{junctionCovs}:}{A \code{data.frame} with predicted and
+observed junction coverages.}
+\item{\code{geneScores}:}{A \code{data.frame} with gene scores.}
+}
 }
 \description{
-Function to calculate the scaled predicted junction coverage for each
+This function calculates the scaled predicted junction coverage for each
 junction, and the JCC score for each gene.
 }
 \examples{
+\dontrun{
+gtf <- system.file("extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz",
+                   package = "jcc")
+bam <- system.file("extdata/reads.chr22.bam", package = "jcc")
+biasMod <- fitAlpineBiasModel(gtf = gtf, bam = bam, organism = "Homo_sapiens",
+                              genome = Hsapiens, genomeVersion = "GRCh38",
+                              version = 90, minLength = 230, maxLength = 7000,
+                              minCount = 10, maxCount = 10000, subsample = TRUE,
+                              nbrSubsample = 30, seed = 1, minSize = NULL,
+                              maxSize = 220, verbose = TRUE)
+tx2gene <- readRDS(system.file("extdata/tx2gene.sub.rds", package = "jcc"))
+predCovProfiles <- predictTxCoverage(biasModel = biasMod$biasModel,
+                                     exonsByTx = biasMod$exonsByTx,
+                                     bam = bam, tx2gene = tx2gene, genome = Hsapiens,
+                                     genes = c("ENSG00000070371", "ENSG00000093010"),
+                                     nCores = 1, verbose = TRUE)
+txQuants <- readRDS(system.file("extdata/quant.sub.rds", package = "jcc"))
+txsc <- scaleTxCoverages(txCoverageProfiles = preds,
+                         txQuants = txQuants, tx2Gene = tx2gene,
+                         strandSpecific = TRUE, methodName = "Salmon",
+                         verbose = TRUE)
+jcov <- read.delim(system.file("extdata/sub.SJ.out.tab", package = "jcc"),
+                   header = FALSE, as.is = TRUE) \%>\%
+ setNames(c("seqnames", "start", "end", "strand", "motif", "annot",
+           "uniqreads", "mmreads", "maxoverhang")) \%>\%
+ dplyr::mutate(strand = replace(strand, strand == 1, "+")) \%>\%
+ dplyr::mutate(strand = replace(strand, strand == 2, "-")) \%>\%
+ dplyr::select(seqnames, start, end, strand, uniqreads, mmreads) \%>\%
+ dplyr::mutate(seqnames = as.character(seqnames))
+combCov <- combineCoverages(junctionCounts = jcov,
+                            junctionPredCovs = txsc$allcovs,
+                            txQuants = txsc$quants)
+jcc <- calculateJCCScores(junctionCovs = combCov$junctionCovs,
+                          geneQuants = combCov$geneQuants)
+}
 
 }
 \references{
