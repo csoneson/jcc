@@ -42,10 +42,15 @@
 #'
 #' @export
 #'
-#' @references Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD:
+#' @references
+#' Soneson C, Love MI, Patro R, Hussain S, Malhotra D, Robinson MD:
 #' A junction coverage compatibility score to quantify the reliability of
 #' transcript abundance estimates and annotation catalogs. bioRxiv
 #' doi:10.1101/378539 (2018).
+#'
+#' Love MI, Hogenesch JB, Irizarry RA: Modeling of RNA-seq fragment sequence
+#' bias reduces systematic errors in transcript abundance estimation. Nature
+#' Biotechnology 34(12):1287-1291 (2016).
 #'
 #' @examples
 #' \dontrun{
