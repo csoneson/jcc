@@ -4,11 +4,20 @@ Title: Calculate JCC Scores
 Version: 0.1.0
 Author: Charlotte Soneson and Michael I Love
 Maintainer: Charlotte Soneson <charlottesoneson@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: The JCC scores are aimed at detecting genes for which estimated 
+    transcript abundances are unreliable, either because of problems in the 
+    transcript abundance estimation or because of missing or wrongly annotated 
+    reference transcripts. It does so by comparing the number of reads 
+    predicted to align across each junction, inferred from the transcript 
+    abundances and a fragment bias model, to the observed number of 
+    junction-spanning reads, obtained via alignment of the reads to the genome. 
+    A high JCC score for a gene indicates that the estimated abundances for 
+    the corresponding transcripts are unreliable and should be treated with 
+    care in downstream analyses. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends: R (>= 3.5)
 Imports: GenomicFeatures,
     ensembldb,
     S4Vectors,
@@ -20,7 +29,7 @@ Imports: GenomicFeatures,
     stats,
     parallel,
     Gviz,
-    scatterpie,
+    scatterpie (>= 0.1.2),
     cowplot,
     ggplot2 (>= 3.0.0),
     rtracklayer,
