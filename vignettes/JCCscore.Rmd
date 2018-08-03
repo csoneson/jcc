@@ -278,7 +278,10 @@ ggplot2::ggplot(as.data.frame(jcc$junctionCovs) %>%
   ggplot2::geom_abline(intercept = 0, slope = 1) + 
   ggplot2::geom_point(size = 5) + 
   ggplot2::theme_bw() + 
-  ggplot2::ggtitle(unique(jcc$junctionCovs %>% dplyr::filter(gene == selGene) %>%
+  ggplot2::xlab("Number of uniquely mapped reads spanning junction") + 
+  ggplot2::ylab("Scaled predicted junction coverage") + 
+  ggplot2::ggtitle(unique(jcc$junctionCovs %>% 
+                            dplyr::filter(gene == selGene) %>%
                             dplyr::pull(methodscore)))
 ```
 

@@ -22,7 +22,7 @@ Imports: GenomicFeatures,
     Gviz,
     scatterpie,
     cowplot,
-    ggplot2,
+    ggplot2 (>= 3.0.0),
     rtracklayer,
     grDevices,
     IRanges
@@ -30,7 +30,6 @@ RoxygenNote: 6.0.1
 Suggests: knitr,
     rmarkdown,
     BiocStyle,
-    BSgenome.Hsapiens.NCBI.GRCh38,
-    ggplot2
+    BSgenome.Hsapiens.NCBI.GRCh38
 VignetteBuilder: knitr
 biocViews: RNASeq, Coverage, Transcriptomics
