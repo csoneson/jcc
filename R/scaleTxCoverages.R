@@ -136,5 +136,6 @@ scaleTxCoverages <- function(txCoverageProfiles, txQuants, tx2gene,
                       by = "transcript") %>%
     dplyr::select(transcript, gene, count, TPM, method, covNote)
 
-  list(junctionPredCovs = junctionPredCovs, txQuants = txQuants)
+  list(junctionPredCovs = as.data.frame(junctionPredCovs),
+       txQuants = as.data.frame(txQuants))
 }

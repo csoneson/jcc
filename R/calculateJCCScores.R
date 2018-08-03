@@ -190,5 +190,6 @@ calculateJCCScores <- function(junctionCovs, geneQuants,
                                    dplyr::distinct(),
                                  by = c("gene", "method"))
 
-  list(junctionCovs = junctionCovs, geneScores = geneQuants)
+  list(junctionCovs = as.data.frame(junctionCovs),
+       geneScores = as.data.frame(geneQuants))
 }

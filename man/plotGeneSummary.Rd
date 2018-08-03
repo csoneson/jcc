@@ -26,7 +26,7 @@ output from \code{\link{combineCoverages}}.}
 
 \item{geneCol}{The column in the gtf file that contains the gene ID.}
 
-\item{exoncol}{The column in the gtf file that contains the exon ID.}
+\item{exonCol}{The column in the gtf file that contains the exon ID.}
 }
 \value{
 A \code{ggplot} object with a multi-panel plot. The size is optimized

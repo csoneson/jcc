@@ -145,6 +145,7 @@ combineCoverages <- function(junctionCounts, junctionPredCovs,
                        dplyr::distinct(),
                      by = c("gene", "method"))
 
-  list(junctionCovs = junctionPredCovs, txQuants = txQuants,
-       geneQuants = geneQuants)
+  list(junctionCovs = as.data.frame(junctionPredCovs),
+       txQuants = as.data.frame(txQuants),
+       geneQuants = as.data.frame(geneQuants))
 }
