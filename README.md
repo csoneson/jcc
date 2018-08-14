@@ -1,5 +1,9 @@
 # Junction coverage compatibility scores
 
+[![Travis CI build status](https://travis-ci.org/csoneson/jcc.svg?branch=master)](https://travis-ci.org/csoneson/jcc)
+<!--[![Codecov.io coverage status](https://codecov.io/github/csoneson/jcc/coverage.svg?branch=master)](https://codecov.io/github/csoneson/jcc)-->
+
+
 This repository contains an R package aimed at facilitating the calculation of gene-wise junction coverage compatibility (JCC) scores, as described in 
 
 - Soneson C, Love MI, Patro R, Hussain S, Malhotra D and Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. [bioRxiv doi:10.1101/378539](https://www.biorxiv.org/content/early/2018/07/28/378539).
