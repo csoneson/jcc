@@ -39,6 +39,7 @@ RoxygenNote: 6.0.1
 Suggests: knitr,
     rmarkdown,
     BiocStyle,
-    BSgenome.Hsapiens.NCBI.GRCh38
+    BSgenome.Hsapiens.NCBI.GRCh38,
+    testthat
 VignetteBuilder: knitr
 biocViews: RNASeq, Coverage, Transcriptomics
