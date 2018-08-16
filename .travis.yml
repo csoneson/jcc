@@ -23,5 +23,9 @@ r_packages:
   - BiocManager
   - ggforce
 
+script:
+- R CMD build .
+- travis_wait 20 R CMD check *tar.gz
+
 after_success:
   - Rscript -e 'library(covr); codecov()'
