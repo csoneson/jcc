@@ -24,8 +24,8 @@ r_packages:
   - ggforce
 
 script:
-- R CMD build .
-- travis_wait 20 R CMD check *tar.gz
+- R CMD build --no-manual --no-resave-data --no-build-vignettes .
+- travis_wait 20 R CMD check --no-build-vignettes --no-manual --timings *tar.gz
 
 after_success:
   - Rscript -e 'library(covr); codecov()'
