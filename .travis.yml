@@ -23,5 +23,3 @@ r_packages:
   - BiocManager
   - ggforce
 
-after_success:
-  - Rscript -e 'library(covr); codecov()'
