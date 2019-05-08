@@ -18,6 +18,10 @@ before_install:
 r_build_args: "--no-manual --no-resave-data --no-build-vignettes"
 r_check_args: "--no-build-vignettes --no-manual --timings --no-tests"
 
+env:
+  global:
+    - R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+
 r_packages:
   - covr
   - BiocManager
