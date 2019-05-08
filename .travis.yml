@@ -10,7 +10,6 @@ warnings_are_errors: false
 
 env:
   - R_REMOTES_UPGRADE="always"
-  - R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
 
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
