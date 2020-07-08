@@ -132,10 +132,10 @@ levels within given ranges) and use the observed read coverages to fit a
 fragment bias model.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>fitAlpineBiasModel</span>(<span class='no'>gtf</span>, <span class='no'>bam</span>, <span class='no'>organism</span>, <span class='no'>genome</span>, <span class='no'>genomeVersion</span>, <span class='no'>version</span>,
-  <span class='kw'>minLength</span> <span class='kw'>=</span> <span class='fl'>600</span>, <span class='kw'>maxLength</span> <span class='kw'>=</span> <span class='fl'>7000</span>, <span class='kw'>minCount</span> <span class='kw'>=</span> <span class='fl'>500</span>, <span class='kw'>maxCount</span> <span class='kw'>=</span> <span class='fl'>10000</span>,
-  <span class='kw'>subsample</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>nbrSubsample</span> <span class='kw'>=</span> <span class='fl'>200</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>minSize</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>maxSize</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>fitAlpineBiasModel</span>(<span class='kw'>gtf</span>, <span class='kw'>bam</span>, <span class='kw'>organism</span>, <span class='kw'>genome</span>, <span class='kw'>genomeVersion</span>, <span class='kw'>version</span>,
+  minLength = <span class='fl'>600</span>, maxLength = <span class='fl'>7000</span>, minCount = <span class='fl'>500</span>, maxCount = <span class='fl'>10000</span>,
+  subsample = <span class='fl'>TRUE</span>, nbrSubsample = <span class='fl'>200</span>, seed = <span class='fl'>1</span>, minSize = <span class='kw'>NULL</span>,
+  maxSize = <span class='kw'>NULL</span>, verbose = <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -225,21 +225,25 @@ doi:10.1101/378539 (2018).</p>
 <p>Love MI, Hogenesch JB, Irizarry RA: Modeling of RNA-seq fragment sequence
 bias reduces systematic errors in transcript abundance estimation. Nature
 Biotechnology 34(12):1287-1291 (2016).</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Charlotte Soneson, Michael I Love</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>gtf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz"</span>,
-                   <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"jcc"</span>)
-<span class='no'>bam</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/reads.chr22.bam"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"jcc"</span>)
-<span class='no'>biasMod</span> <span class='kw'>&lt;-</span> <span class='fu'>fitAlpineBiasModel</span>(<span class='kw'>gtf</span> <span class='kw'>=</span> <span class='no'>gtf</span>, <span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bam</span>,
-                              <span class='kw'>organism</span> <span class='kw'>=</span> <span class='st'>"Homo_sapiens"</span>,
-                              <span class='kw'>genome</span> <span class='kw'>=</span> <span class='no'>Hsapiens</span>, <span class='kw'>genomeVersion</span> <span class='kw'>=</span> <span class='st'>"GRCh38"</span>,
-                              <span class='kw'>version</span> <span class='kw'>=</span> <span class='fl'>90</span>, <span class='kw'>minLength</span> <span class='kw'>=</span> <span class='fl'>230</span>,
-                              <span class='kw'>maxLength</span> <span class='kw'>=</span> <span class='fl'>7000</span>, <span class='kw'>minCount</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-                              <span class='kw'>maxCount</span> <span class='kw'>=</span> <span class='fl'>10000</span>, <span class='kw'>subsample</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-                              <span class='kw'>nbrSubsample</span> <span class='kw'>=</span> <span class='fl'>30</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>minSize</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-                              <span class='kw'>maxSize</span> <span class='kw'>=</span> <span class='fl'>220</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='kw'>gtf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz"</span>,
+                   package = <span class='st'>"jcc"</span>)
+<span class='kw'>bam</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/reads.chr22.bam"</span>, package = <span class='st'>"jcc"</span>)
+<span class='kw'>biasMod</span> <span class='op'>&lt;-</span> <span class='fu'>fitAlpineBiasModel</span>(gtf = <span class='kw'>gtf</span>, bam = <span class='kw'>bam</span>,
+                              organism = <span class='st'>"Homo_sapiens"</span>,
+                              genome = <span class='kw'>Hsapiens</span>, genomeVersion = <span class='st'>"GRCh38"</span>,
+                              version = <span class='fl'>90</span>, minLength = <span class='fl'>230</span>,
+                              maxLength = <span class='fl'>7000</span>, minCount = <span class='fl'>10</span>,
+                              maxCount = <span class='fl'>10000</span>, subsample = <span class='fl'>TRUE</span>,
+                              nbrSubsample = <span class='fl'>30</span>, seed = <span class='fl'>1</span>, minSize = <span class='kw'>NULL</span>,
+                              maxSize = <span class='fl'>220</span>, verbose = <span class='fl'>TRUE</span>)
+}
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

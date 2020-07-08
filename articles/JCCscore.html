@@ -69,7 +69,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="JCCscore_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Calculating JCC scores</h1>
@@ -80,7 +80,7 @@
                                     <h4 class="author">Dheeraj Malhotra</h4>
                                     <h4 class="author">Mark D Robinson</h4>
                         
-            <h4 class="date">2020-05-08</h4>
+            <h4 class="date">2020-07-08</h4>
       
       
       <div class="hidden name"><code>JCCscore.Rmd</code></div>
@@ -114,25 +114,28 @@
 <h1 class="hasAnchor">
 <a href="#fit-fragment-bias-model" class="anchor"></a>Fit fragment bias model</h1>
 <p>The first step in the process is to fit a fragment bias model using the <em><a href="https://bioconductor.org/packages/3.11/alpine">alpine</a></em> package. The <code><a href="../reference/fitAlpineBiasModel.html">fitAlpineBiasModel()</a></code> function provides a wrapper containing the necessary steps. Note that the parameters of this function may need to be adapted to be appropriate for a specific data set. In particular, since the example data set only contains a small number of reads and genes, we set <code>minCount</code> and <code>minLength</code> to small values to make sure that some genes will be retained and used to fit the fragment bias model. However, in a real data set these arguments can often be set to higher values. Also, the <code>BSgenome</code> object (here, <code>Hsapiens</code> from the <code>BSgenome.Hsapiens.NCBI.GRCh38</code> package) should be replaced with the appropriate object for your organism. We refer to the help file and the <em><a href="https://bioconductor.org/packages/3.11/alpine">alpine</a></em> package for more detailed explanations of each parameter.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="co">## Load necessary packages</span>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="co">## Load necessary packages</span>
 <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span>({
-  <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">jcc</span>)
-  <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
-  <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">BSgenome.Hsapiens.NCBI.GRCh38</span>)
-})</pre></body></html></div>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co">## Load gtf file and bam file with aligned reads</span>
-<span class="no">gtf</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz"</span>,
-                   <span class="kw">package</span> <span class="kw">=</span> <span class="st">"jcc"</span>)
-<span class="no">bam</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/reads.chr22.bam"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"jcc"</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">jcc</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://dplyr.tidyverse.org">dplyr</a></span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">BSgenome.Hsapiens.NCBI.GRCh38</span>)
+})
+</pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="co">## Load gtf file and bam file with aligned reads</span>
+<span class="kw">gtf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz"</span>, 
+                   package = <span class="st">"jcc"</span>)
+<span class="kw">bam</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/reads.chr22.bam"</span>, package = <span class="st">"jcc"</span>)
 
 <span class="co">## Fit fragment bias model</span>
-<span class="no">biasMod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitAlpineBiasModel.html">fitAlpineBiasModel</a></span>(<span class="kw">gtf</span> <span class="kw">=</span> <span class="no">gtf</span>, <span class="kw">bam</span> <span class="kw">=</span> <span class="no">bam</span>, <span class="kw">organism</span> <span class="kw">=</span> <span class="st">"Homo_sapiens"</span>,
-                              <span class="kw">genome</span> <span class="kw">=</span> <span class="no">Hsapiens</span>, <span class="kw">genomeVersion</span> <span class="kw">=</span> <span class="st">"GRCh38"</span>,
-                              <span class="kw">version</span> <span class="kw">=</span> <span class="fl">90</span>, <span class="kw">minLength</span> <span class="kw">=</span> <span class="fl">230</span>, <span class="kw">maxLength</span> <span class="kw">=</span> <span class="fl">7000</span>,
-                              <span class="kw">minCount</span> <span class="kw">=</span> <span class="fl">10</span>, <span class="kw">maxCount</span> <span class="kw">=</span> <span class="fl">10000</span>,
-                              <span class="kw">subsample</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">nbrSubsample</span> <span class="kw">=</span> <span class="fl">30</span>, <span class="kw">seed</span> <span class="kw">=</span> <span class="fl">1</span>,
-                              <span class="kw">minSize</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="kw">maxSize</span> <span class="kw">=</span> <span class="fl">220</span>,
-                              <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="kw">biasMod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitAlpineBiasModel.html">fitAlpineBiasModel</a></span>(gtf = <span class="kw">gtf</span>, bam = <span class="kw">bam</span>, organism = <span class="st">"Homo_sapiens"</span>,
+                              genome = <span class="kw">Hsapiens</span>, genomeVersion = <span class="st">"GRCh38"</span>,
+                              version = <span class="fl">90</span>, minLength = <span class="fl">230</span>, maxLength = <span class="fl">7000</span>,
+                              minCount = <span class="fl">10</span>, maxCount = <span class="fl">10000</span>, 
+                              subsample = <span class="fl">TRUE</span>, nbrSubsample = <span class="fl">30</span>, seed = <span class="fl">1</span>,
+                              minSize = <span class="kw">NULL</span>, maxSize = <span class="fl">220</span>, 
+                              verbose = <span class="fl">TRUE</span>)
 <span class="co">#&gt; Creating TxDb object...</span>
 <span class="co">#&gt; Importing GTF file ... OK</span>
 <span class="co">#&gt; Processing metadata ... OK</span>
@@ -181,7 +184,8 @@
 <span class="co">#&gt;     Use 'getDumpedAlignments()' to retrieve them from the dump environment.</span>
 <span class="co">#&gt; Building fragment types...</span>
 <span class="co">#&gt; Fitting bias model...</span>
-<span class="co">#&gt; Warning in .local(x, row.names, optional, ...): 'optional' argument was ignored</span></pre></body></html></div>
+<span class="co">#&gt; Warning in .local(x, row.names, optional, ...): 'optional' argument was ignored</span>
+</pre></div>
 <p>The output of <code>fitAlpineBiasModel</code> is a list with three objects:</p>
 <ul>
 <li>
@@ -191,10 +195,11 @@
 <li>
 <code>transcripts</code>: a <code>GRanges</code> object with all reference transcripts.</li>
 </ul>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">biasMod</span>)
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">biasMod</span>)
 <span class="co">#&gt; [1] "biasModel"   "exonsByTx"   "transcripts"</span>
 
-<span class="no">biasMod</span>$<span class="no">exonsByTx</span>
+<span class="kw">biasMod</span><span class="op">$</span><span class="kw">exonsByTx</span>
 <span class="co">#&gt; GRangesList object of length 510:</span>
 <span class="co">#&gt; $ENST00000624155</span>
 <span class="co">#&gt; GRanges object with 2 ranges and 3 metadata columns:</span>
@@ -233,7 +238,7 @@
 <span class="co">#&gt; ...</span>
 <span class="co">#&gt; &lt;507 more elements&gt;</span>
 
-<span class="no">biasMod</span>$<span class="no">transcripts</span>
+<span class="kw">biasMod</span><span class="op">$</span><span class="kw">transcripts</span>
 <span class="co">#&gt; GRanges object with 510 ranges and 2 metadata columns:</span>
 <span class="co">#&gt;                   seqnames            ranges strand |         tx_name</span>
 <span class="co">#&gt;                      &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; |     &lt;character&gt;</span>
@@ -262,15 +267,17 @@
 <span class="co">#&gt;   ENST00000462319 ENSG00000099889</span>
 <span class="co">#&gt;   ENST00000467828 ENSG00000099889</span>
 <span class="co">#&gt;   -------</span>
-<span class="co">#&gt;   seqinfo: 1 sequence from an unspecified genome; no seqlengths</span></pre></body></html></div>
+<span class="co">#&gt;   seqinfo: 1 sequence from an unspecified genome; no seqlengths</span>
+</pre></div>
 </div>
 <div id="predict-transcript-coverage-profiles" class="section level1">
 <h1 class="hasAnchor">
 <a href="#predict-transcript-coverage-profiles" class="anchor"></a>Predict transcript coverage profiles</h1>
 <p>Next, we use the fitted fragment bias model to predict the coverage profile for each transcript in a set of specified genes. The <code>genes</code> argument can be set to <code>NULL</code> to predict the coverage profiles for all transcripts in the annotation catalog. Note, however, that this is computationally demanding if the number of transcripts is large. The <code>nCores</code> argument can be increased to predict coverage profiles for several transcripts in parallel.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co">## Load transcript-to-gene conversion table</span>
-<span class="no">tx2gene</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/tx2gene.sub.rds"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"jcc"</span>))
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">tx2gene</span>)
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="co">## Load transcript-to-gene conversion table</span>
+<span class="kw">tx2gene</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/tx2gene.sub.rds"</span>, package = <span class="st">"jcc"</span>))
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">tx2gene</span>)
 <span class="co">#&gt;                   tx            gene symbol   gene_biotype      tx_biotype</span>
 <span class="co">#&gt; 4524 ENST00000621271 ENSG00000070371 CLTCL1 protein_coding  protein_coding</span>
 <span class="co">#&gt; 4525 ENST00000427926 ENSG00000070371 CLTCL1 protein_coding  protein_coding</span>
@@ -280,13 +287,13 @@
 <span class="co">#&gt; 4529 ENST00000615606 ENSG00000070371 CLTCL1 protein_coding retained_intron</span>
 
 <span class="co">## Predict transcript coverage profiles</span>
-<span class="no">predCovProfiles</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/predictTxCoverage.html">predictTxCoverage</a></span>(<span class="kw">biasModel</span> <span class="kw">=</span> <span class="no">biasMod</span>$<span class="no">biasModel</span>,
-                                     <span class="kw">exonsByTx</span> <span class="kw">=</span> <span class="no">biasMod</span>$<span class="no">exonsByTx</span>,
-                                     <span class="kw">bam</span> <span class="kw">=</span> <span class="no">bam</span>, <span class="kw">tx2gene</span> <span class="kw">=</span> <span class="no">tx2gene</span>,
-                                     <span class="kw">genome</span> <span class="kw">=</span> <span class="no">Hsapiens</span>,
-                                     <span class="kw">genes</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"ENSG00000070371"</span>,
-                                               <span class="st">"ENSG00000093010"</span>),
-                                     <span class="kw">nCores</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="kw">predCovProfiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predictTxCoverage.html">predictTxCoverage</a></span>(biasModel = <span class="kw">biasMod</span><span class="op">$</span><span class="kw">biasModel</span>, 
+                                     exonsByTx = <span class="kw">biasMod</span><span class="op">$</span><span class="kw">exonsByTx</span>, 
+                                     bam = <span class="kw">bam</span>, tx2gene = <span class="kw">tx2gene</span>, 
+                                     genome = <span class="kw">Hsapiens</span>,
+                                     genes = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"ENSG00000070371"</span>,
+                                               <span class="st">"ENSG00000093010"</span>), 
+                                     nCores = <span class="fl">1</span>, verbose = <span class="fl">TRUE</span>)
 <span class="co">#&gt; Predicting coverage for 23 transcripts...</span>
 <span class="co">#&gt; ENST00000361682</span>
 <span class="co">#&gt; Warning in .local(x, row.names, optional, ...): 'optional' argument was ignored</span>
@@ -358,8 +365,9 @@
 <span class="co">#&gt; Warning in .local(x, row.names, optional, ...): 'optional' argument was ignored</span>
 <span class="co">#&gt; Predicting junction coverages...</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">predCovProfiles</span>)
-<span class="co">#&gt; [1] 23</span></pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw">predCovProfiles</span>)
+<span class="co">#&gt; [1] 23</span>
+</pre></div>
 <p>The output of <code>predictTxCoverage</code> is a list with one element per reference transcript annotated to any of the selected genes. Each element, in turn, is a list with five components:</p>
 <ul>
 <li>
@@ -373,7 +381,8 @@
 <li>
 <code>note</code>: either ‘covOK’, ‘covError’ or ‘covNA’. If ‘covOK’, <em><a href="https://bioconductor.org/packages/3.11/alpine">alpine</a></em> was able to predict a coverage profile. If ‘covError’ or ‘covNA’, the coverage profile could not be predicted, most likely because the transcript is shorter than the fragment length or because no reads in the BAM file overlapped the transcript. In both these cases, we impose a uniform coverage profile for the transcript.</li>
 </ul>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">predCovProfiles</span>[<span class="fl">2</span>]
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="kw">predCovProfiles</span>[<span class="fl">2</span>]
 <span class="co">#&gt; $ENST00000403184</span>
 <span class="co">#&gt; $ENST00000403184$predCov</span>
 <span class="co">#&gt; numeric-Rle of length 2216 with 2216 runs</span>
@@ -398,20 +407,23 @@
 <span class="co">#&gt; [1] 187.9594</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $ENST00000403184$note</span>
-<span class="co">#&gt; [1] "covOK"</span></pre></body></html></div>
+<span class="co">#&gt; [1] "covOK"</span>
+</pre></div>
 </div>
 <div id="scale-transcript-coverage-profiles" class="section level1">
 <h1 class="hasAnchor">
 <a href="#scale-transcript-coverage-profiles" class="anchor"></a>Scale transcript coverage profiles</h1>
 <p>Based on the predicted transcript coverage profiles obtained above, and a set of estimated transcript abundances, we next determine the number of reads predicted to map across each annotated splice junction.</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co">## Read transcript abundance estimates</span>
-<span class="no">txQuants</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/quant.sub.rds"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"jcc"</span>))
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="co">## Read transcript abundance estimates</span>
+<span class="kw">txQuants</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/quant.sub.rds"</span>, package = <span class="st">"jcc"</span>))
 
 <span class="co">## Scale predicted coverages based on the estimated abundances</span>
-<span class="no">txsc</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/scaleTxCoverages.html">scaleTxCoverages</a></span>(<span class="kw">txCoverageProfiles</span> <span class="kw">=</span> <span class="no">predCovProfiles</span>,
-                         <span class="kw">txQuants</span> <span class="kw">=</span> <span class="no">txQuants</span>, <span class="kw">tx2gene</span> <span class="kw">=</span> <span class="no">tx2gene</span>,
-                         <span class="kw">strandSpecific</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">methodName</span> <span class="kw">=</span> <span class="st">"Salmon"</span>,
-                         <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<span class="kw">txsc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaleTxCoverages.html">scaleTxCoverages</a></span>(txCoverageProfiles = <span class="kw">predCovProfiles</span>, 
+                         txQuants = <span class="kw">txQuants</span>, tx2gene = <span class="kw">tx2gene</span>,
+                         strandSpecific = <span class="fl">TRUE</span>, methodName = <span class="st">"Salmon"</span>, 
+                         verbose = <span class="fl">TRUE</span>)
+</pre></div>
 <p><code>scaleTxCoverages</code> returns a list with two elements:</p>
 <ul>
 <li>
@@ -419,10 +431,11 @@
 <li>
 <code>txQuants</code>: A <code>data.frame</code> with estimated transcript abundances, including information about whether or not the coverage profile could be predicted (‘covOK’) or if a uniform coverage was imposed (‘covError’ or ‘covNA’).</li>
 </ul>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">txsc</span>)
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">txsc</span>)
 <span class="co">#&gt; [1] "junctionPredCovs" "txQuants"</span>
 
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">txsc</span>$<span class="no">junctionPredCovs</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">txsc</span><span class="op">$</span><span class="kw">junctionPredCovs</span>)
 <span class="co">#&gt;   seqnames    start      end width strand   predCov</span>
 <span class="co">#&gt; 1       22 19941898 19961198 19301      +  75.58930</span>
 <span class="co">#&gt; 2       22 19961290 19962526  1237      +  10.66403</span>
@@ -445,31 +458,33 @@
 <span class="co">#&gt; 5 ENSG00000093010 Salmon</span>
 <span class="co">#&gt; 6 ENSG00000093010 Salmon</span>
 
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">txsc</span>$<span class="no">txQuants</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">txsc</span><span class="op">$</span><span class="kw">txQuants</span>)
 <span class="co">#&gt;        transcript            gene   count      TPM method covNote</span>
 <span class="co">#&gt; 1 ENST00000621271 ENSG00000070371 263.734 0.748398 Salmon   covOK</span>
 <span class="co">#&gt; 2 ENST00000427926 ENSG00000070371 170.231 0.462868 Salmon   covOK</span>
 <span class="co">#&gt; 3 ENST00000412649 ENSG00000070371  59.429 0.259538 Salmon   covOK</span>
 <span class="co">#&gt; 4 ENST00000622493 ENSG00000070371  39.974 0.415456 Salmon   covOK</span>
 <span class="co">#&gt; 5 ENST00000617926 ENSG00000070371   0.000 0.000000 Salmon   covOK</span>
-<span class="co">#&gt; 6 ENST00000615606 ENSG00000070371   0.000 0.000000 Salmon   covOK</span></pre></body></html></div>
+<span class="co">#&gt; 6 ENST00000615606 ENSG00000070371   0.000 0.000000 Salmon   covOK</span>
+</pre></div>
 </div>
 <div id="combine-observed-and-predicted-junction-coverages" class="section level1">
 <h1 class="hasAnchor">
 <a href="#combine-observed-and-predicted-junction-coverages" class="anchor"></a>Combine observed and predicted junction coverages</h1>
 <p>In order to calculate JCC scores, we need to match the predicted junction coverages obtained above with the observed coverages obtained by aligning the reads to the genome. Assuming the reads were aligned to the genome with STAR, we have a text file (whose name ends with <code>SJ.out.tab</code>) containing the number of reads spanning each annotated junction. The code below shows how to read this file, add column names and combine these observed junction coverages with the predicted ones obtained above. If the reads were aligned to the genome with another aligner than STAR, the observed junction coverages may need to be determined separately and formatted in the appropriate way.</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="co">## Read the SJ.out.tab file from STAR, add column names and encode the strand</span>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="co">## Read the SJ.out.tab file from STAR, add column names and encode the strand</span>
 <span class="co">## information as +/-</span>
-<span class="no">jcov</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.delim</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/sub.SJ.out.tab"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"jcc"</span>),
-                   <span class="kw">header</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">as.is</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="kw">%&gt;%</span>
+<span class="kw">jcov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.delim</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/sub.SJ.out.tab"</span>, package = <span class="st">"jcc"</span>),
+                   header = <span class="fl">FALSE</span>, as.is = <span class="fl">TRUE</span>) <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"seqnames"</span>, <span class="st">"start"</span>, <span class="st">"end"</span>, <span class="st">"strand"</span>, <span class="st">"motif"</span>, <span class="st">"annot"</span>,
-             <span class="st">"uniqreads"</span>, <span class="st">"mmreads"</span>, <span class="st">"maxoverhang"</span>)) <span class="kw">%&gt;%</span>
-  <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">strand</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/replace.html">replace</a></span>(<span class="no">strand</span>, <span class="no">strand</span> <span class="kw">==</span> <span class="fl">1</span>, <span class="st">"+"</span>)) <span class="kw">%&gt;%</span>
-  <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">strand</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/replace.html">replace</a></span>(<span class="no">strand</span>, <span class="no">strand</span> <span class="kw">==</span> <span class="fl">2</span>, <span class="st">"-"</span>)) <span class="kw">%&gt;%</span>
-  <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">seqnames</span>, <span class="no">start</span>, <span class="no">end</span>, <span class="no">strand</span>, <span class="no">uniqreads</span>, <span class="no">mmreads</span>) <span class="kw">%&gt;%</span>
-  <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">seqnames</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="no">seqnames</span>))
+             <span class="st">"uniqreads"</span>, <span class="st">"mmreads"</span>, <span class="st">"maxoverhang"</span>)) <span class="op">%&gt;%</span> 
+  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(strand = <span class="fu"><a href="https://rdrr.io/r/base/replace.html">replace</a></span>(<span class="kw">strand</span>, <span class="kw">strand</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"+"</span>)) <span class="op">%&gt;%</span>
+  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(strand = <span class="fu"><a href="https://rdrr.io/r/base/replace.html">replace</a></span>(<span class="kw">strand</span>, <span class="kw">strand</span> <span class="op">==</span> <span class="fl">2</span>, <span class="st">"-"</span>)) <span class="op">%&gt;%</span>
+  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">seqnames</span>, <span class="kw">start</span>, <span class="kw">end</span>, <span class="kw">strand</span>, <span class="kw">uniqreads</span>, <span class="kw">mmreads</span>) <span class="op">%&gt;%</span>
+  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(seqnames = <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw">seqnames</span>))
 
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">jcov</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">jcov</span>)
 <span class="co">#&gt;   seqnames    start      end strand uniqreads mmreads</span>
 <span class="co">#&gt; 1       22 10848028 10870192      +         0       1</span>
 <span class="co">#&gt; 2       22 10941781 10944966      -         3       1</span>
@@ -479,10 +494,11 @@
 <span class="co">#&gt; 6       22 10950175 10959066      -         2      11</span>
 
 <span class="co">## Combine the observed and predicted junction coverages</span>
-<span class="no">combCov</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/combineCoverages.html">combineCoverages</a></span>(<span class="kw">junctionCounts</span> <span class="kw">=</span> <span class="no">jcov</span>,
-                            <span class="kw">junctionPredCovs</span> <span class="kw">=</span> <span class="no">txsc</span>$<span class="no">junctionPredCovs</span>,
-                            <span class="kw">txQuants</span> <span class="kw">=</span> <span class="no">txsc</span>$<span class="no">txQuants</span>)
-<span class="co">#&gt; Joining, by = c("seqnames", "start", "end", "gene")</span></pre></body></html></div>
+<span class="kw">combCov</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combineCoverages.html">combineCoverages</a></span>(junctionCounts = <span class="kw">jcov</span>, 
+                            junctionPredCovs = <span class="kw">txsc</span><span class="op">$</span><span class="kw">junctionPredCovs</span>,
+                            txQuants = <span class="kw">txsc</span><span class="op">$</span><span class="kw">txQuants</span>)
+<span class="co">#&gt; Joining, by = c("seqnames", "start", "end", "gene")</span>
+</pre></div>
 <p>The output of <code>combineCoverages</code> is a list with three elements:</p>
 <ul>
 <li>
@@ -492,10 +508,11 @@
 <li>
 <code>geneQuants</code>: A <code>data.frame</code> with estimated gene abundances as well as the total number uniquely mapping and multi-mapping reads spanning any of the junctions in the gene.</li>
 </ul>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">combCov</span>)
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">combCov</span>)
 <span class="co">#&gt; [1] "junctionCovs" "txQuants"     "geneQuants"</span>
 
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">combCov</span>$<span class="no">junctionCovs</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">combCov</span><span class="op">$</span><span class="kw">junctionCovs</span>)
 <span class="co">#&gt;   junctionid seqnames    start      end width strand   predCov</span>
 <span class="co">#&gt; 1         J1       22 19941898 19961198 19301      +  75.58930</span>
 <span class="co">#&gt; 2         J4       22 19961290 19962526  1237      +  10.66403</span>
@@ -518,7 +535,7 @@
 <span class="co">#&gt; 5 ENSG00000093010 Salmon       402       0  1.0000000</span>
 <span class="co">#&gt; 6 ENSG00000093010 Salmon         0       0  1.0000000</span>
 
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">combCov</span>$<span class="no">txQuants</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">combCov</span><span class="op">$</span><span class="kw">txQuants</span>)
 <span class="co">#&gt;        transcript            gene   count      TPM method covNote</span>
 <span class="co">#&gt; 1 ENST00000621271 ENSG00000070371 263.734 0.748398 Salmon   covOK</span>
 <span class="co">#&gt; 2 ENST00000427926 ENSG00000070371 170.231 0.462868 Salmon   covOK</span>
@@ -527,7 +544,7 @@
 <span class="co">#&gt; 5 ENST00000617926 ENSG00000070371   0.000 0.000000 Salmon   covOK</span>
 <span class="co">#&gt; 6 ENST00000615606 ENSG00000070371   0.000 0.000000 Salmon   covOK</span>
 
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">combCov</span>$<span class="no">geneQuants</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">combCov</span><span class="op">$</span><span class="kw">geneQuants</span>)
 <span class="co">#&gt;              gene method    count       TPM nbr_expressed_transcripts</span>
 <span class="co">#&gt; 1 ENSG00000070371 Salmon  547.001  2.103382                         1</span>
 <span class="co">#&gt; 2 ENSG00000093010 Salmon 1697.000 45.966095                         1</span>
@@ -536,17 +553,19 @@
 <span class="co">#&gt; 2                            3             1          1073           4</span>
 <span class="co">#&gt;   uniqjuncfraction</span>
 <span class="co">#&gt; 1         1.000000</span>
-<span class="co">#&gt; 2         0.996286</span></pre></body></html></div>
+<span class="co">#&gt; 2         0.996286</span>
+</pre></div>
 </div>
 <div id="calculate-jcc-scores" class="section level1">
 <h1 class="hasAnchor">
 <a href="#calculate-jcc-scores" class="anchor"></a>Calculate JCC scores</h1>
 <p>Finally, we calculate scaled predicted junction coverages and summarize the differences between the observed and predicted junction coverages for each gene by the JCC (junction coverage compatibility) scores.</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="co">## Calculate a JCC score for each gene</span>
-<span class="no">jcc</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/calculateJCCScores.html">calculateJCCScores</a></span>(<span class="kw">junctionCovs</span> <span class="kw">=</span> <span class="no">combCov</span>$<span class="no">junctionCovs</span>,
-                          <span class="kw">geneQuants</span> <span class="kw">=</span> <span class="no">combCov</span>$<span class="no">geneQuants</span>)
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="co">## Calculate a JCC score for each gene</span>
+<span class="kw">jcc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateJCCScores.html">calculateJCCScores</a></span>(junctionCovs = <span class="kw">combCov</span><span class="op">$</span><span class="kw">junctionCovs</span>, 
+                          geneQuants = <span class="kw">combCov</span><span class="op">$</span><span class="kw">geneQuants</span>)
 
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">jcc</span>$<span class="no">junctionCovs</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">jcc</span><span class="op">$</span><span class="kw">junctionCovs</span>)
 <span class="co">#&gt;   junctionid seqnames    start      end width strand   predCov</span>
 <span class="co">#&gt; 1         J1       22 19941898 19961198 19301      +  75.58930</span>
 <span class="co">#&gt; 2         J4       22 19961290 19962526  1237      +  10.66403</span>
@@ -576,7 +595,7 @@
 <span class="co">#&gt; 5 Salmon (0.73)</span>
 <span class="co">#&gt; 6 Salmon (0.73)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">jcc</span>$<span class="no">geneScores</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">jcc</span><span class="op">$</span><span class="kw">geneScores</span>)
 <span class="co">#&gt;              gene method    count       TPM nbr_expressed_transcripts</span>
 <span class="co">#&gt; 1 ENSG00000070371 Salmon  547.001  2.103382                         1</span>
 <span class="co">#&gt; 2 ENSG00000093010 Salmon 1697.000 45.966095                         1</span>
@@ -585,7 +604,8 @@
 <span class="co">#&gt; 2                            3             1          1073           4</span>
 <span class="co">#&gt;   uniqjuncfraction jccscore</span>
 <span class="co">#&gt; 1         1.000000     0.52</span>
-<span class="co">#&gt; 2         0.996286     0.73</span></pre></body></html></div>
+<span class="co">#&gt; 2         0.996286     0.73</span>
+</pre></div>
 <p><code>calculateJCCScores</code> returns a list with two elements:</p>
 <ul>
 <li>
@@ -598,35 +618,40 @@
 <h1 class="hasAnchor">
 <a href="#plot-observed-and-predicted-junction-coverages" class="anchor"></a>Plot observed and predicted junction coverages</h1>
 <p>To investigate the agreement between the observed and predicted junction coverages for a given gene, we can plot the <code>uniqreads</code> and <code>scaledCov</code> columns from the junction coverage data frame generated in the previous step:</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">selGene</span> <span class="kw">&lt;-</span> <span class="st">"ENSG00000070371"</span>
-<span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="no">jcc</span>$<span class="no">junctionCovs</span>) <span class="kw">%&gt;%</span>
-                  <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">gene</span> <span class="kw">==</span> <span class="no">selGene</span>),
-                <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">uniqreads</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">scaledCov</span>)) +
-  <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span>(<span class="kw">intercept</span> <span class="kw">=</span> <span class="fl">0</span>, <span class="kw">slope</span> <span class="kw">=</span> <span class="fl">1</span>) +
-  <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>(<span class="kw">size</span> <span class="kw">=</span> <span class="fl">5</span>) +
-  <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() +
-  <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span>(<span class="st">"Number of uniquely mapped reads spanning junction"</span>) +
-  <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">"Scaled predicted junction coverage"</span>) +
-  <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="no">jcc</span>$<span class="no">junctionCovs</span> <span class="kw">%&gt;%</span>
-                            <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">gene</span> <span class="kw">==</span> <span class="no">selGene</span>) <span class="kw">%&gt;%</span>
-                            <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span>(<span class="no">methodscore</span>)))</pre></body></html></div>
+<div class="sourceCode" id="cb12"><pre class="downlit">
+<span class="kw">selGene</span> <span class="op">&lt;-</span> <span class="st">"ENSG00000070371"</span>
+<span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="kw">jcc</span><span class="op">$</span><span class="kw">junctionCovs</span>) <span class="op">%&gt;%</span>
+                  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="kw">gene</span> <span class="op">==</span> <span class="kw">selGene</span>), 
+                <span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(x = <span class="kw">uniqreads</span>, y = <span class="kw">scaledCov</span>)) <span class="op">+</span> 
+  <span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span>(intercept = <span class="fl">0</span>, slope = <span class="fl">1</span>) <span class="op">+</span> 
+  <span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>(size = <span class="fl">5</span>) <span class="op">+</span> 
+  <span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() <span class="op">+</span> 
+  <span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span>(<span class="st">"Number of uniquely mapped reads spanning junction"</span>) <span class="op">+</span> 
+  <span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">"Scaled predicted junction coverage"</span>) <span class="op">+</span> 
+  <span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="kw">jcc</span><span class="op">$</span><span class="kw">junctionCovs</span> <span class="op">%&gt;%</span> 
+                            <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="kw">gene</span> <span class="op">==</span> <span class="kw">selGene</span>) <span class="op">%&gt;%</span>
+                            <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span>(<span class="kw">methodscore</span>)))
+</pre></div>
 <p><img src="JCCscore_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
 <p>The package also contains a function to generate a multi-panel plot, showing (i) the observed genome coverage profile in the region of the gene, (ii) the estimated transcript abundances, and (iii) the association between the observed and predicted junction coverages.</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">bwFile</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/reads.chr22.bw"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"jcc"</span>)
-<span class="fu"><a href="../reference/plotGeneSummary.html">plotGeneSummary</a></span>(<span class="kw">gtf</span> <span class="kw">=</span> <span class="no">gtf</span>, <span class="kw">junctionCovs</span> <span class="kw">=</span> <span class="no">jcc</span>$<span class="no">junctionCovs</span>,
-                <span class="kw">useGene</span> <span class="kw">=</span> <span class="st">"ENSG00000070371"</span>, <span class="kw">bwFile</span> <span class="kw">=</span> <span class="no">bwFile</span>,
-                <span class="kw">txQuants</span> <span class="kw">=</span> <span class="no">combCov</span>$<span class="no">txQuants</span>, <span class="kw">txCol</span> <span class="kw">=</span> <span class="st">"transcript_id"</span>,
-                <span class="kw">geneCol</span> <span class="kw">=</span> <span class="st">"gene_id"</span>, <span class="kw">exonCol</span> <span class="kw">=</span> <span class="st">"exon_id"</span>)
-<span class="co">#&gt; Warning: Package `magick` is required to draw images. Image not drawn.</span></pre></body></html></div>
+<div class="sourceCode" id="cb13"><pre class="downlit">
+<span class="kw">bwFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/reads.chr22.bw"</span>, package = <span class="st">"jcc"</span>)
+<span class="fu"><a href="../reference/plotGeneSummary.html">plotGeneSummary</a></span>(gtf = <span class="kw">gtf</span>, junctionCovs = <span class="kw">jcc</span><span class="op">$</span><span class="kw">junctionCovs</span>, 
+                useGene = <span class="st">"ENSG00000070371"</span>, bwFile = <span class="kw">bwFile</span>,
+                txQuants = <span class="kw">combCov</span><span class="op">$</span><span class="kw">txQuants</span>, txCol = <span class="st">"transcript_id"</span>,
+                geneCol = <span class="st">"gene_id"</span>, exonCol = <span class="st">"exon_id"</span>)
+<span class="co">#&gt; Warning: Package `magick` is required to draw images. Image not drawn.</span>
+</pre></div>
 <p><img src="JCCscore_files/figure-html/unnamed-chunk-13-1.png" width="1152"></p>
 </div>
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
-<span class="co">#&gt; R version 4.0.0 (2020-04-24)</span>
+<div class="sourceCode" id="cb14"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
+<span class="co">#&gt; R version 4.0.2 (2020-06-22)</span>
 <span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span>
-<span class="co">#&gt; Running under: macOS Catalina 10.15.4</span>
+<span class="co">#&gt; Running under: macOS Catalina 10.15.5</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Matrix products: default</span>
 <span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib</span>
@@ -646,49 +671,49 @@
 <span class="co">#&gt;  [4] Biostrings_2.56.0                     </span>
 <span class="co">#&gt;  [5] XVector_0.28.0                        </span>
 <span class="co">#&gt;  [6] GenomicRanges_1.40.0                  </span>
-<span class="co">#&gt;  [7] GenomeInfoDb_1.24.0                   </span>
-<span class="co">#&gt;  [8] IRanges_2.22.1                        </span>
-<span class="co">#&gt;  [9] S4Vectors_0.26.0                      </span>
+<span class="co">#&gt;  [7] GenomeInfoDb_1.24.2                   </span>
+<span class="co">#&gt;  [8] IRanges_2.22.2                        </span>
+<span class="co">#&gt;  [9] S4Vectors_0.26.1                      </span>
 <span class="co">#&gt; [10] BiocGenerics_0.34.0                   </span>
-<span class="co">#&gt; [11] dplyr_0.8.5                           </span>
+<span class="co">#&gt; [11] dplyr_1.0.0                           </span>
 <span class="co">#&gt; [12] jcc_0.1.0                             </span>
 <span class="co">#&gt; [13] BiocStyle_2.16.0                      </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;   [1] colorspace_1.4-1            ellipsis_0.3.0             </span>
+<span class="co">#&gt;   [1] colorspace_1.4-1            ellipsis_0.3.1             </span>
 <span class="co">#&gt;   [3] rprojroot_1.3-2             biovizBase_1.36.0          </span>
-<span class="co">#&gt;   [5] htmlTable_1.13.3            base64enc_0.1-3            </span>
-<span class="co">#&gt;   [7] fs_1.4.1                    dichromat_2.0-0            </span>
+<span class="co">#&gt;   [5] htmlTable_2.0.1             base64enc_0.1-3            </span>
+<span class="co">#&gt;   [7] fs_1.4.2                    dichromat_2.0-0            </span>
 <span class="co">#&gt;   [9] rstudioapi_0.11             farver_2.0.3               </span>
-<span class="co">#&gt;  [11] bit64_0.9-7                 AnnotationDbi_1.50.0       </span>
-<span class="co">#&gt;  [13] scatterpie_0.1.4            splines_4.0.0              </span>
-<span class="co">#&gt;  [15] knitr_1.28                  polyclip_1.10-0            </span>
+<span class="co">#&gt;  [11] bit64_0.9-7                 AnnotationDbi_1.50.1       </span>
+<span class="co">#&gt;  [13] scatterpie_0.1.4            splines_4.0.2              </span>
+<span class="co">#&gt;  [15] knitr_1.29                  polyclip_1.10-0            </span>
 <span class="co">#&gt;  [17] Formula_1.2-3               speedglm_0.3-2             </span>
 <span class="co">#&gt;  [19] Rsamtools_2.4.0             cluster_2.1.0              </span>
-<span class="co">#&gt;  [21] dbplyr_1.4.3                png_0.1-7                  </span>
-<span class="co">#&gt;  [23] graph_1.66.0                ggforce_0.3.1              </span>
-<span class="co">#&gt;  [25] BiocManager_1.30.10         compiler_4.0.0             </span>
+<span class="co">#&gt;  [21] dbplyr_1.4.4                png_0.1-7                  </span>
+<span class="co">#&gt;  [23] graph_1.66.0                ggforce_0.3.2              </span>
+<span class="co">#&gt;  [25] BiocManager_1.30.10         compiler_4.0.2             </span>
 <span class="co">#&gt;  [27] httr_1.4.1                  rvcheck_0.1.8              </span>
-<span class="co">#&gt;  [29] backports_1.1.6             assertthat_0.2.1           </span>
+<span class="co">#&gt;  [29] backports_1.1.8             assertthat_0.2.1           </span>
 <span class="co">#&gt;  [31] Matrix_1.2-18               lazyeval_0.2.2             </span>
 <span class="co">#&gt;  [33] alpine_1.14.0               tweenr_1.0.1               </span>
-<span class="co">#&gt;  [35] acepack_1.4.1               htmltools_0.4.0            </span>
-<span class="co">#&gt;  [37] prettyunits_1.1.1           tools_4.0.0                </span>
-<span class="co">#&gt;  [39] gtable_0.3.0                glue_1.4.0                 </span>
+<span class="co">#&gt;  [35] acepack_1.4.1               htmltools_0.5.0            </span>
+<span class="co">#&gt;  [37] prettyunits_1.1.1           tools_4.0.2                </span>
+<span class="co">#&gt;  [39] gtable_0.3.0                glue_1.4.1                 </span>
 <span class="co">#&gt;  [41] GenomeInfoDbData_1.2.3      rappdirs_0.3.1             </span>
-<span class="co">#&gt;  [43] Rcpp_1.0.4.6                Biobase_2.48.0             </span>
-<span class="co">#&gt;  [45] pkgdown_1.5.1.9000          vctrs_0.2.4                </span>
-<span class="co">#&gt;  [47] xfun_0.13                   stringr_1.4.0              </span>
+<span class="co">#&gt;  [43] Rcpp_1.0.5                  Biobase_2.48.0             </span>
+<span class="co">#&gt;  [45] pkgdown_1.5.1.9000          vctrs_0.3.1                </span>
+<span class="co">#&gt;  [47] xfun_0.15                   stringr_1.4.0              </span>
 <span class="co">#&gt;  [49] lifecycle_0.2.0             ensembldb_2.12.1           </span>
-<span class="co">#&gt;  [51] XML_3.99-0.3                zlibbioc_1.34.0            </span>
-<span class="co">#&gt;  [53] MASS_7.3-51.6               scales_1.1.0               </span>
+<span class="co">#&gt;  [51] XML_3.99-0.4                zlibbioc_1.34.0            </span>
+<span class="co">#&gt;  [53] MASS_7.3-51.6               scales_1.1.1               </span>
 <span class="co">#&gt;  [55] VariantAnnotation_1.34.0    hms_0.5.3                  </span>
 <span class="co">#&gt;  [57] ProtGenerics_1.20.0         SummarizedExperiment_1.18.1</span>
 <span class="co">#&gt;  [59] RBGL_1.64.0                 AnnotationFilter_1.12.0    </span>
 <span class="co">#&gt;  [61] RColorBrewer_1.1-2          yaml_2.2.1                 </span>
 <span class="co">#&gt;  [63] curl_4.3                    memoise_1.1.0              </span>
-<span class="co">#&gt;  [65] gridExtra_2.3               ggplot2_3.3.0              </span>
-<span class="co">#&gt;  [67] biomaRt_2.44.0              rpart_4.1-15               </span>
+<span class="co">#&gt;  [65] gridExtra_2.3               ggplot2_3.3.2              </span>
+<span class="co">#&gt;  [67] biomaRt_2.44.1              rpart_4.1-15               </span>
 <span class="co">#&gt;  [69] latticeExtra_0.6-29         stringi_1.4.6              </span>
 <span class="co">#&gt;  [71] RSQLite_2.2.0               desc_1.2.0                 </span>
 <span class="co">#&gt;  [73] checkmate_2.0.0             GenomicFeatures_1.40.0     </span>
@@ -698,20 +723,22 @@
 <span class="co">#&gt;  [81] lattice_0.20-41             purrr_0.3.4                </span>
 <span class="co">#&gt;  [83] labeling_0.3                GenomicAlignments_1.24.0   </span>
 <span class="co">#&gt;  [85] htmlwidgets_1.5.1           cowplot_1.0.0              </span>
-<span class="co">#&gt;  [87] bit_1.1-15.2                tidyselect_1.0.0           </span>
-<span class="co">#&gt;  [89] magrittr_1.5                bookdown_0.18              </span>
-<span class="co">#&gt;  [91] R6_2.4.1                    Hmisc_4.4-0                </span>
-<span class="co">#&gt;  [93] DelayedArray_0.14.0         DBI_1.1.0                  </span>
-<span class="co">#&gt;  [95] pillar_1.4.4                foreign_0.8-79             </span>
-<span class="co">#&gt;  [97] survival_3.1-12             RCurl_1.98-1.2             </span>
-<span class="co">#&gt;  [99] nnet_7.3-14                 tibble_3.0.1               </span>
-<span class="co">#&gt; [101] crayon_1.3.4                BiocFileCache_1.12.0       </span>
-<span class="co">#&gt; [103] rmarkdown_2.1               jpeg_0.1-8.1               </span>
-<span class="co">#&gt; [105] progress_1.2.2              grid_4.0.0                 </span>
-<span class="co">#&gt; [107] data.table_1.12.8           blob_1.2.1                 </span>
-<span class="co">#&gt; [109] digest_0.6.25               tidyr_1.0.2                </span>
-<span class="co">#&gt; [111] openssl_1.4.1               munsell_0.5.0              </span>
-<span class="co">#&gt; [113] Gviz_1.32.0                 askpass_1.1</span></pre></body></html></div>
+<span class="co">#&gt;  [87] bit_1.1-15.2                tidyselect_1.1.0           </span>
+<span class="co">#&gt;  [89] magrittr_1.5                bookdown_0.20              </span>
+<span class="co">#&gt;  [91] R6_2.4.1                    generics_0.0.2             </span>
+<span class="co">#&gt;  [93] Hmisc_4.4-0                 DelayedArray_0.14.0        </span>
+<span class="co">#&gt;  [95] DBI_1.1.0                   pillar_1.4.4               </span>
+<span class="co">#&gt;  [97] foreign_0.8-80              survival_3.2-3             </span>
+<span class="co">#&gt;  [99] RCurl_1.98-1.2              nnet_7.3-14                </span>
+<span class="co">#&gt; [101] tibble_3.0.2                crayon_1.3.4               </span>
+<span class="co">#&gt; [103] BiocFileCache_1.12.0        rmarkdown_2.3.2            </span>
+<span class="co">#&gt; [105] jpeg_0.1-8.1                progress_1.2.2             </span>
+<span class="co">#&gt; [107] grid_4.0.2                  data.table_1.12.8          </span>
+<span class="co">#&gt; [109] blob_1.2.1                  digest_0.6.25              </span>
+<span class="co">#&gt; [111] tidyr_1.1.0                 openssl_1.4.2              </span>
+<span class="co">#&gt; [113] munsell_0.5.0               Gviz_1.32.0                </span>
+<span class="co">#&gt; [115] askpass_1.1</span>
+</pre></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
