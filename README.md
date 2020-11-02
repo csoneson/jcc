@@ -1,6 +1,5 @@
 # Junction coverage compatibility scores
 
-[![Travis CI build status](https://travis-ci.org/csoneson/jcc.svg?branch=master)](https://travis-ci.org/csoneson/jcc)
 [![R build status](https://github.com/csoneson/jcc/workflows/R-CMD-check/badge.svg)](https://github.com/csoneson/jcc/actions)
 <!--[![Codecov.io coverage status](https://codecov.io/github/csoneson/jcc/coverage.svg?branch=master)](https://codecov.io/github/csoneson/jcc)-->
 
