@@ -87,12 +87,6 @@ junction." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -130,7 +124,7 @@ junction." />
 
     <div class="ref-description">
     <p>This function takes a list of predicted transcript coverage profiles (from
-<code>predictTxCoverage</code>) and corresponding transcript abundance
+<code><a href='predictTxCoverage.html'>predictTxCoverage</a></code>) and corresponding transcript abundance
 estimates (from, e.g., Salmon, kallisto, StringTie, RSEM, or any other
 transcript abundance estimation software), and scales the coverage profiles
 by the abundance estimates in order to determine the predicted number of
@@ -140,8 +134,8 @@ up these for each annotated junction, across all transcripts containing the
 junction.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>scaleTxCoverages</span>(<span class='kw'>txCoverageProfiles</span>, <span class='kw'>txQuants</span>, <span class='kw'>tx2gene</span>, <span class='kw'>strandSpecific</span>,
-  <span class='kw'>methodName</span>, verbose = <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>scaleTxCoverages</span><span class='op'>(</span><span class='va'>txCoverageProfiles</span>, <span class='va'>txQuants</span>, <span class='va'>tx2gene</span>, <span class='va'>strandSpecific</span>,
+  <span class='va'>methodName</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -149,7 +143,7 @@ junction.</p>
     <tr>
       <th>txCoverageProfiles</th>
       <td><p>A <code>list</code> of predicted transcript coverage
-profiles (output from <code>predictTxCoverage</code>).</p></td>
+profiles (output from <code><a href='predictTxCoverage.html'>predictTxCoverage</a></code>).</p></td>
     </tr>
     <tr>
       <th>txQuants</th>
@@ -203,32 +197,33 @@ abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539
     <p>Charlotte Soneson</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='kw'>gtf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz"</span>,
-                   package = <span class='st'>"jcc"</span>)
-<span class='kw'>bam</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/reads.chr22.bam"</span>, package = <span class='st'>"jcc"</span>)
-<span class='kw'>biasMod</span> <span class='op'>&lt;-</span> <span class='fu'>fitAlpineBiasModel</span>(gtf = <span class='kw'>gtf</span>, bam = <span class='kw'>bam</span>,
-                              organism = <span class='st'>"Homo_sapiens"</span>,
-                              genome = <span class='kw'>Hsapiens</span>, genomeVersion = <span class='st'>"GRCh38"</span>,
-                              version = <span class='fl'>90</span>, minLength = <span class='fl'>230</span>,
-                              maxLength = <span class='fl'>7000</span>, minCount = <span class='fl'>10</span>,
-                              maxCount = <span class='fl'>10000</span>, subsample = <span class='fl'>TRUE</span>,
-                              nbrSubsample = <span class='fl'>30</span>, seed = <span class='fl'>1</span>, minSize = <span class='kw'>NULL</span>,
-                              maxSize = <span class='fl'>220</span>, verbose = <span class='fl'>TRUE</span>)
-<span class='kw'>tx2gene</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/tx2gene.sub.rds"</span>, package = <span class='st'>"jcc"</span>))
-<span class='kw'>predCovProfiles</span> <span class='op'>&lt;-</span> <span class='fu'>predictTxCoverage</span>(biasModel = <span class='kw'>biasMod</span><span class='op'>$</span><span class='kw'>biasModel</span>,
-                                     exonsByTx = <span class='kw'>biasMod</span><span class='op'>$</span><span class='kw'>exonsByTx</span>,
-                                     bam = <span class='kw'>bam</span>, tx2gene = <span class='kw'>tx2gene</span>,
-                                     genome = <span class='kw'>Hsapiens</span>,
-                                     genes = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ENSG00000070371"</span>,
-                                               <span class='st'>"ENSG00000093010"</span>),
-                                     nCores = <span class='fl'>1</span>, verbose = <span class='fl'>TRUE</span>)
-<span class='kw'>txQuants</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/quant.sub.rds"</span>, package = <span class='st'>"jcc"</span>))
-<span class='kw'>txsc</span> <span class='op'>&lt;-</span> <span class='fu'>scaleTxCoverages</span>(txCoverageProfiles = <span class='kw'>predCovProfiles</span>,
-                         txQuants = <span class='kw'>txQuants</span>, tx2gene = <span class='kw'>tx2gene</span>,
-                         strandSpecific = <span class='fl'>TRUE</span>, methodName = <span class='st'>"Salmon"</span>,
-                         verbose = <span class='fl'>TRUE</span>)
-}
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>gtf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz"</span>,
+                   package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span>
+<span class='va'>bam</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/reads.chr22.bam"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span>
+<span class='va'>biasMod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fitAlpineBiasModel.html'>fitAlpineBiasModel</a></span><span class='op'>(</span>gtf <span class='op'>=</span> <span class='va'>gtf</span>, bam <span class='op'>=</span> <span class='va'>bam</span>,
+                              organism <span class='op'>=</span> <span class='st'>"Homo_sapiens"</span>,
+                              genome <span class='op'>=</span> <span class='va'>Hsapiens</span>, genomeVersion <span class='op'>=</span> <span class='st'>"GRCh38"</span>,
+                              version <span class='op'>=</span> <span class='fl'>90</span>, minLength <span class='op'>=</span> <span class='fl'>230</span>,
+                              maxLength <span class='op'>=</span> <span class='fl'>7000</span>, minCount <span class='op'>=</span> <span class='fl'>10</span>,
+                              maxCount <span class='op'>=</span> <span class='fl'>10000</span>, subsample <span class='op'>=</span> <span class='cn'>TRUE</span>,
+                              nbrSubsample <span class='op'>=</span> <span class='fl'>30</span>, seed <span class='op'>=</span> <span class='fl'>1</span>, minSize <span class='op'>=</span> <span class='cn'>NULL</span>,
+                              maxSize <span class='op'>=</span> <span class='fl'>220</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='va'>tx2gene</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/tx2gene.sub.rds"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>predCovProfiles</span> <span class='op'>&lt;-</span> <span class='fu'><a href='predictTxCoverage.html'>predictTxCoverage</a></span><span class='op'>(</span>biasModel <span class='op'>=</span> <span class='va'>biasMod</span><span class='op'>$</span><span class='va'>biasModel</span>,
+                                     exonsByTx <span class='op'>=</span> <span class='va'>biasMod</span><span class='op'>$</span><span class='va'>exonsByTx</span>,
+                                     bam <span class='op'>=</span> <span class='va'>bam</span>, tx2gene <span class='op'>=</span> <span class='va'>tx2gene</span>,
+                                     genome <span class='op'>=</span> <span class='va'>Hsapiens</span>,
+                                     genes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ENSG00000070371"</span>,
+                                               <span class='st'>"ENSG00000093010"</span><span class='op'>)</span>,
+                                     nCores <span class='op'>=</span> <span class='fl'>1</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='va'>txQuants</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/quant.sub.rds"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>txsc</span> <span class='op'>&lt;-</span> <span class='fu'>scaleTxCoverages</span><span class='op'>(</span>txCoverageProfiles <span class='op'>=</span> <span class='va'>predCovProfiles</span>,
+                         txQuants <span class='op'>=</span> <span class='va'>txQuants</span>, tx2gene <span class='op'>=</span> <span class='va'>tx2gene</span>,
+                         strandSpecific <span class='op'>=</span> <span class='cn'>TRUE</span>, methodName <span class='op'>=</span> <span class='st'>"Salmon"</span>,
+                         verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='op'>}</span>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -245,7 +240,7 @@ abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

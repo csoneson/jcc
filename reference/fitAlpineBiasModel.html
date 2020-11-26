@@ -83,12 +83,6 @@ fragment bias model." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -132,10 +126,10 @@ levels within given ranges) and use the observed read coverages to fit a
 fragment bias model.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>fitAlpineBiasModel</span>(<span class='kw'>gtf</span>, <span class='kw'>bam</span>, <span class='kw'>organism</span>, <span class='kw'>genome</span>, <span class='kw'>genomeVersion</span>, <span class='kw'>version</span>,
-  minLength = <span class='fl'>600</span>, maxLength = <span class='fl'>7000</span>, minCount = <span class='fl'>500</span>, maxCount = <span class='fl'>10000</span>,
-  subsample = <span class='fl'>TRUE</span>, nbrSubsample = <span class='fl'>200</span>, seed = <span class='fl'>1</span>, minSize = <span class='kw'>NULL</span>,
-  maxSize = <span class='kw'>NULL</span>, verbose = <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>fitAlpineBiasModel</span><span class='op'>(</span><span class='va'>gtf</span>, <span class='va'>bam</span>, <span class='va'>organism</span>, <span class='va'>genome</span>, <span class='va'>genomeVersion</span>, <span class='va'>version</span>,
+  minLength <span class='op'>=</span> <span class='fl'>600</span>, maxLength <span class='op'>=</span> <span class='fl'>7000</span>, minCount <span class='op'>=</span> <span class='fl'>500</span>, maxCount <span class='op'>=</span> <span class='fl'>10000</span>,
+  subsample <span class='op'>=</span> <span class='cn'>TRUE</span>, nbrSubsample <span class='op'>=</span> <span class='fl'>200</span>, seed <span class='op'>=</span> <span class='fl'>1</span>, minSize <span class='op'>=</span> <span class='cn'>NULL</span>,
+  maxSize <span class='op'>=</span> <span class='cn'>NULL</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -230,19 +224,20 @@ Biotechnology 34(12):1287-1291 (2016).</p>
     <p>Charlotte Soneson, Michael I Love</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='kw'>gtf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz"</span>,
-                   package = <span class='st'>"jcc"</span>)
-<span class='kw'>bam</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/reads.chr22.bam"</span>, package = <span class='st'>"jcc"</span>)
-<span class='kw'>biasMod</span> <span class='op'>&lt;-</span> <span class='fu'>fitAlpineBiasModel</span>(gtf = <span class='kw'>gtf</span>, bam = <span class='kw'>bam</span>,
-                              organism = <span class='st'>"Homo_sapiens"</span>,
-                              genome = <span class='kw'>Hsapiens</span>, genomeVersion = <span class='st'>"GRCh38"</span>,
-                              version = <span class='fl'>90</span>, minLength = <span class='fl'>230</span>,
-                              maxLength = <span class='fl'>7000</span>, minCount = <span class='fl'>10</span>,
-                              maxCount = <span class='fl'>10000</span>, subsample = <span class='fl'>TRUE</span>,
-                              nbrSubsample = <span class='fl'>30</span>, seed = <span class='fl'>1</span>, minSize = <span class='kw'>NULL</span>,
-                              maxSize = <span class='fl'>220</span>, verbose = <span class='fl'>TRUE</span>)
-}
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>gtf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz"</span>,
+                   package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span>
+<span class='va'>bam</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/reads.chr22.bam"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span>
+<span class='va'>biasMod</span> <span class='op'>&lt;-</span> <span class='fu'>fitAlpineBiasModel</span><span class='op'>(</span>gtf <span class='op'>=</span> <span class='va'>gtf</span>, bam <span class='op'>=</span> <span class='va'>bam</span>,
+                              organism <span class='op'>=</span> <span class='st'>"Homo_sapiens"</span>,
+                              genome <span class='op'>=</span> <span class='va'>Hsapiens</span>, genomeVersion <span class='op'>=</span> <span class='st'>"GRCh38"</span>,
+                              version <span class='op'>=</span> <span class='fl'>90</span>, minLength <span class='op'>=</span> <span class='fl'>230</span>,
+                              maxLength <span class='op'>=</span> <span class='fl'>7000</span>, minCount <span class='op'>=</span> <span class='fl'>10</span>,
+                              maxCount <span class='op'>=</span> <span class='fl'>10000</span>, subsample <span class='op'>=</span> <span class='cn'>TRUE</span>,
+                              nbrSubsample <span class='op'>=</span> <span class='fl'>30</span>, seed <span class='op'>=</span> <span class='fl'>1</span>, minSize <span class='op'>=</span> <span class='cn'>NULL</span>,
+                              maxSize <span class='op'>=</span> <span class='fl'>220</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='op'>}</span>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -259,7 +254,7 @@ Biotechnology 34(12):1287-1291 (2016).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>
