@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -76,57 +78,62 @@
   <div class="contents col-md-9">
 <div id="junction-coverage-compatibility-scores" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#junction-coverage-compatibility-scores" class="anchor"></a>Junction coverage compatibility scores</h1></div>
+<a href="#junction-coverage-compatibility-scores" class="anchor" aria-hidden="true"></a>Junction coverage compatibility scores</h1></div>
 
 <p>This repository contains an R package aimed at facilitating the calculation of gene-wise junction coverage compatibility (JCC) scores, as described in</p>
 <ul>
-<li>Soneson C, Love MI, Patro R, Hussain S, Malhotra D and Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. <a href="http://www.life-science-alliance.org/content/2/1/e201800175.abstract">Life Science Alliance 2019</a>.</li>
+<li>Soneson C, Love MI, Patro R, Hussain S, Malhotra D and Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. <a href="http://www.life-science-alliance.org/content/2/1/e201800175.abstract" class="external-link">Life Science Alliance 2019</a>.</li>
 </ul>
 <p>The JCC scores are aimed at detecting genes for which estimated transcript abundances are unreliable, either because of problems in the transcript abundance estimation or because of missing or wrongly annotated reference transcripts. It does so by comparing the number of reads predicted to align across each junction, inferred from the transcript abundances and a fragment bias model, to the observed number of junction-spanning reads, obtained via alignment of the reads to the genome. A high JCC score for a gene indicates that the estimated abundances for the corresponding transcripts are unreliable and should be treated with care in downstream analyses.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<a href="#installation" class="anchor" aria-hidden="true"></a>Installation</h2>
 <p>The <code>jcc</code> package can be installed using <code>devtools</code>:</p>
-<pre><code><a href="https://rdrr.io/r/base/library.html">library(devtools)
+<pre><code><a href="https://rdrr.io/r/base/library.html" class="external-link">library(devtools)
 install_github("csoneson/jcc")</a></code></pre>
 <p>or the <code>BiocManager</code> CRAN package</p>
-<pre><code><a href="https://rdrr.io/pkg/BiocManager/man/install.html">BiocManager::install("csoneson/jcc")</a></code></pre>
+<pre><code>BiocManager::install("csoneson/jcc")</code></pre>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
 <a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
+
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Charlotte Soneson <br><small class="roles"> Maintainer </small>  </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/csoneson/jcc/actions"><img src="https://github.com/csoneson/jcc/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
+<li><a href="https://github.com/csoneson/jcc/actions" class="external-link"><img src="https://github.com/csoneson/jcc/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Charlotte Soneson.</p>
+  <p></p>
+<p>Developed by Charlotte Soneson.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p>
 </div>
 
       </footer>
@@ -134,6 +141,8 @@ install_github("csoneson/jcc")</a></code></pre>
 
   
 
+
+  
 
   </body>
 </html>

@@ -60,9 +60,15 @@ the observed and predicted junction coverages within the gene." />
 
 
 
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -124,8 +130,8 @@ coverage and gene model, (ii) the estimated transcript abundances and (iii)
 the observed and predicted junction coverages within the gene.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotGeneSummary</span><span class='op'>(</span><span class='va'>gtf</span>, <span class='va'>junctionCovs</span>, <span class='va'>useGene</span>, <span class='va'>bwFile</span>, <span class='va'>txQuants</span>,
-  txCol <span class='op'>=</span> <span class='st'>"transcript_id"</span>, geneCol <span class='op'>=</span> <span class='st'>"gene_id"</span>, exonCol <span class='op'>=</span> <span class='st'>"exon_id"</span><span class='op'>)</span></pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>plotGeneSummary</span><span class='op'>(</span><span class='va'>gtf</span>, <span class='va'>junctionCovs</span>, <span class='va'>useGene</span>, <span class='va'>bwFile</span>, <span class='va'>txQuants</span>,
+  txCol <span class='op'>=</span> <span class='st'>"transcript_id"</span>, geneCol <span class='op'>=</span> <span class='st'>"gene_id"</span>, exonCol <span class='op'>=</span> <span class='st'>"exon_id"</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -183,51 +189,51 @@ abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539
     <p>Charlotte Soneson</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='va'>gtf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz"</span>,
-                   package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span>
-<span class='va'>bam</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/reads.chr22.bam"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span>
-<span class='va'>biasMod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fitAlpineBiasModel.html'>fitAlpineBiasModel</a></span><span class='op'>(</span>gtf <span class='op'>=</span> <span class='va'>gtf</span>, bam <span class='op'>=</span> <span class='va'>bam</span>,
-                              organism <span class='op'>=</span> <span class='st'>"Homo_sapiens"</span>,
-                              genome <span class='op'>=</span> <span class='va'>Hsapiens</span>, genomeVersion <span class='op'>=</span> <span class='st'>"GRCh38"</span>,
-                              version <span class='op'>=</span> <span class='fl'>90</span>, minLength <span class='op'>=</span> <span class='fl'>230</span>,
-                              maxLength <span class='op'>=</span> <span class='fl'>7000</span>, minCount <span class='op'>=</span> <span class='fl'>10</span>,
-                              maxCount <span class='op'>=</span> <span class='fl'>10000</span>, subsample <span class='op'>=</span> <span class='cn'>TRUE</span>,
-                              nbrSubsample <span class='op'>=</span> <span class='fl'>30</span>, seed <span class='op'>=</span> <span class='fl'>1</span>, minSize <span class='op'>=</span> <span class='cn'>NULL</span>,
-                              maxSize <span class='op'>=</span> <span class='fl'>220</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='va'>tx2gene</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/tx2gene.sub.rds"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>predCovProfiles</span> <span class='op'>&lt;-</span> <span class='fu'><a href='predictTxCoverage.html'>predictTxCoverage</a></span><span class='op'>(</span>biasModel <span class='op'>=</span> <span class='va'>biasMod</span><span class='op'>$</span><span class='va'>biasModel</span>,
-                                     exonsByTx <span class='op'>=</span> <span class='va'>biasMod</span><span class='op'>$</span><span class='va'>exonsByTx</span>,
-                                     bam <span class='op'>=</span> <span class='va'>bam</span>, tx2gene <span class='op'>=</span> <span class='va'>tx2gene</span>,
-                                     genome <span class='op'>=</span> <span class='va'>Hsapiens</span>,
-                                     genes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ENSG00000070371"</span>,
-                                               <span class='st'>"ENSG00000093010"</span><span class='op'>)</span>,
-                                     nCores <span class='op'>=</span> <span class='fl'>1</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='va'>txQuants</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/quant.sub.rds"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>txsc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='scaleTxCoverages.html'>scaleTxCoverages</a></span><span class='op'>(</span>txCoverageProfiles <span class='op'>=</span> <span class='va'>predCovProfiles</span>,
-                         txQuants <span class='op'>=</span> <span class='va'>txQuants</span>, tx2gene <span class='op'>=</span> <span class='va'>tx2gene</span>,
-                         strandSpecific <span class='op'>=</span> <span class='cn'>TRUE</span>, methodName <span class='op'>=</span> <span class='st'>"Salmon"</span>,
-                         verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='va'>jcov</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.delim</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sub.SJ.out.tab"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span>,
-                   header <span class='op'>=</span> <span class='cn'>FALSE</span>, as.is <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/r/stats/setNames.html'>setNames</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"seqnames"</span>, <span class='st'>"start"</span>, <span class='st'>"end"</span>, <span class='st'>"strand"</span>, <span class='st'>"motif"</span>, <span class='st'>"annot"</span>,
-           <span class='st'>"uniqreads"</span>, <span class='st'>"mmreads"</span>, <span class='st'>"maxoverhang"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
- <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>strand <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/replace.html'>replace</a></span><span class='op'>(</span><span class='va'>strand</span>, <span class='va'>strand</span> <span class='op'>==</span> <span class='fl'>1</span>, <span class='st'>"+"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
- <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>strand <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/replace.html'>replace</a></span><span class='op'>(</span><span class='va'>strand</span>, <span class='va'>strand</span> <span class='op'>==</span> <span class='fl'>2</span>, <span class='st'>"-"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
- <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>seqnames</span>, <span class='va'>start</span>, <span class='va'>end</span>, <span class='va'>strand</span>, <span class='va'>uniqreads</span>, <span class='va'>mmreads</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
- <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>seqnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>as.character</a></span><span class='op'>(</span><span class='va'>seqnames</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>combCov</span> <span class='op'>&lt;-</span> <span class='fu'><a href='combineCoverages.html'>combineCoverages</a></span><span class='op'>(</span>junctionCounts <span class='op'>=</span> <span class='va'>jcov</span>,
-                            junctionPredCovs <span class='op'>=</span> <span class='va'>txsc</span><span class='op'>$</span><span class='va'>junctionPredCovs</span>,
-                            txQuants <span class='op'>=</span> <span class='va'>txsc</span><span class='op'>$</span><span class='va'>txQuants</span><span class='op'>)</span>
-<span class='va'>jcc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='calculateJCCScores.html'>calculateJCCScores</a></span><span class='op'>(</span>junctionCovs <span class='op'>=</span> <span class='va'>combCov</span><span class='op'>$</span><span class='va'>junctionCovs</span>,
-                          geneQuants <span class='op'>=</span> <span class='va'>combCov</span><span class='op'>$</span><span class='va'>geneQuants</span><span class='op'>)</span>
-<span class='va'>bwFile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/reads.chr22.bw"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span>
-<span class='fu'>plotGeneSummary</span><span class='op'>(</span>gtf <span class='op'>=</span> <span class='va'>gtf</span>, junctionCovs <span class='op'>=</span> <span class='va'>jcc</span><span class='op'>$</span><span class='va'>junctionCovs</span>,
-                useGene <span class='op'>=</span> <span class='st'>"ENSG00000070371"</span>, bwFile <span class='op'>=</span> <span class='va'>bwFile</span>,
-                txQuants <span class='op'>=</span> <span class='va'>combCov</span><span class='op'>$</span><span class='va'>txQuants</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='va'>gtf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz"</span>,</span>
+<span class='r-in'>                   package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>bam</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/reads.chr22.bam"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>biasMod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fitAlpineBiasModel.html'>fitAlpineBiasModel</a></span><span class='op'>(</span>gtf <span class='op'>=</span> <span class='va'>gtf</span>, bam <span class='op'>=</span> <span class='va'>bam</span>,</span>
+<span class='r-in'>                              organism <span class='op'>=</span> <span class='st'>"Homo_sapiens"</span>,</span>
+<span class='r-in'>                              genome <span class='op'>=</span> <span class='va'>Hsapiens</span>, genomeVersion <span class='op'>=</span> <span class='st'>"GRCh38"</span>,</span>
+<span class='r-in'>                              version <span class='op'>=</span> <span class='fl'>90</span>, minLength <span class='op'>=</span> <span class='fl'>230</span>,</span>
+<span class='r-in'>                              maxLength <span class='op'>=</span> <span class='fl'>7000</span>, minCount <span class='op'>=</span> <span class='fl'>10</span>,</span>
+<span class='r-in'>                              maxCount <span class='op'>=</span> <span class='fl'>10000</span>, subsample <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
+<span class='r-in'>                              nbrSubsample <span class='op'>=</span> <span class='fl'>30</span>, seed <span class='op'>=</span> <span class='fl'>1</span>, minSize <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span class='r-in'>                              maxSize <span class='op'>=</span> <span class='fl'>220</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>tx2gene</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/tx2gene.sub.rds"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>predCovProfiles</span> <span class='op'>&lt;-</span> <span class='fu'><a href='predictTxCoverage.html'>predictTxCoverage</a></span><span class='op'>(</span>biasModel <span class='op'>=</span> <span class='va'>biasMod</span><span class='op'>$</span><span class='va'>biasModel</span>,</span>
+<span class='r-in'>                                     exonsByTx <span class='op'>=</span> <span class='va'>biasMod</span><span class='op'>$</span><span class='va'>exonsByTx</span>,</span>
+<span class='r-in'>                                     bam <span class='op'>=</span> <span class='va'>bam</span>, tx2gene <span class='op'>=</span> <span class='va'>tx2gene</span>,</span>
+<span class='r-in'>                                     genome <span class='op'>=</span> <span class='va'>Hsapiens</span>,</span>
+<span class='r-in'>                                     genes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ENSG00000070371"</span>,</span>
+<span class='r-in'>                                               <span class='st'>"ENSG00000093010"</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                     nCores <span class='op'>=</span> <span class='fl'>1</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>txQuants</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/quant.sub.rds"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>txsc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='scaleTxCoverages.html'>scaleTxCoverages</a></span><span class='op'>(</span>txCoverageProfiles <span class='op'>=</span> <span class='va'>predCovProfiles</span>,</span>
+<span class='r-in'>                         txQuants <span class='op'>=</span> <span class='va'>txQuants</span>, tx2gene <span class='op'>=</span> <span class='va'>tx2gene</span>,</span>
+<span class='r-in'>                         strandSpecific <span class='op'>=</span> <span class='cn'>TRUE</span>, methodName <span class='op'>=</span> <span class='st'>"Salmon"</span>,</span>
+<span class='r-in'>                         verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>jcov</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.delim</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sub.SJ.out.tab"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span>,</span>
+<span class='r-in'>                   header <span class='op'>=</span> <span class='cn'>FALSE</span>, as.is <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span></span>
+<span class='r-in'> <span class='fu'><a href='https://rdrr.io/r/stats/setNames.html'>setNames</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"seqnames"</span>, <span class='st'>"start"</span>, <span class='st'>"end"</span>, <span class='st'>"strand"</span>, <span class='st'>"motif"</span>, <span class='st'>"annot"</span>,</span>
+<span class='r-in'>           <span class='st'>"uniqreads"</span>, <span class='st'>"mmreads"</span>, <span class='st'>"maxoverhang"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span></span>
+<span class='r-in'> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>strand <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/replace.html'>replace</a></span><span class='op'>(</span><span class='va'>strand</span>, <span class='va'>strand</span> <span class='op'>==</span> <span class='fl'>1</span>, <span class='st'>"+"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span></span>
+<span class='r-in'> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>strand <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/replace.html'>replace</a></span><span class='op'>(</span><span class='va'>strand</span>, <span class='va'>strand</span> <span class='op'>==</span> <span class='fl'>2</span>, <span class='st'>"-"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span></span>
+<span class='r-in'> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>seqnames</span>, <span class='va'>start</span>, <span class='va'>end</span>, <span class='va'>strand</span>, <span class='va'>uniqreads</span>, <span class='va'>mmreads</span><span class='op'>)</span> <span class='op'>%&gt;%</span></span>
+<span class='r-in'> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>seqnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>as.character</a></span><span class='op'>(</span><span class='va'>seqnames</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>combCov</span> <span class='op'>&lt;-</span> <span class='fu'><a href='combineCoverages.html'>combineCoverages</a></span><span class='op'>(</span>junctionCounts <span class='op'>=</span> <span class='va'>jcov</span>,</span>
+<span class='r-in'>                            junctionPredCovs <span class='op'>=</span> <span class='va'>txsc</span><span class='op'>$</span><span class='va'>junctionPredCovs</span>,</span>
+<span class='r-in'>                            txQuants <span class='op'>=</span> <span class='va'>txsc</span><span class='op'>$</span><span class='va'>txQuants</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>jcc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='calculateJCCScores.html'>calculateJCCScores</a></span><span class='op'>(</span>junctionCovs <span class='op'>=</span> <span class='va'>combCov</span><span class='op'>$</span><span class='va'>junctionCovs</span>,</span>
+<span class='r-in'>                          geneQuants <span class='op'>=</span> <span class='va'>combCov</span><span class='op'>$</span><span class='va'>geneQuants</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>bwFile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/reads.chr22.bw"</span>, package <span class='op'>=</span> <span class='st'>"jcc"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>plotGeneSummary</span><span class='op'>(</span>gtf <span class='op'>=</span> <span class='va'>gtf</span>, junctionCovs <span class='op'>=</span> <span class='va'>jcc</span><span class='op'>$</span><span class='va'>junctionCovs</span>,</span>
+<span class='r-in'>                useGene <span class='op'>=</span> <span class='st'>"ENSG00000070371"</span>, bwFile <span class='op'>=</span> <span class='va'>bwFile</span>,</span>
+<span class='r-in'>                txQuants <span class='op'>=</span> <span class='va'>combCov</span><span class='op'>$</span><span class='va'>txQuants</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -239,11 +245,11 @@ abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539
 
       <footer>
       <div class="copyright">
-  <p>Developed by Charlotte Soneson.</p>
+  <p><p>Developed by Charlotte Soneson.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -251,6 +257,8 @@ abundance estimates and annotation catalogs. bioRxiv doi:10.1101/378539
 
   
 
+
+  
 
   </body>
 </html>
