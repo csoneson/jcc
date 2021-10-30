@@ -76,23 +76,23 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="junction-coverage-compatibility-scores" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#junction-coverage-compatibility-scores" class="anchor" aria-hidden="true"></a>Junction coverage compatibility scores</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="junction-coverage-compatibility-scores">Junction coverage compatibility scores<a class="anchor" aria-label="anchor" href="#junction-coverage-compatibility-scores"></a>
+</h1></div>
 
 <p>This repository contains an R package aimed at facilitating the calculation of gene-wise junction coverage compatibility (JCC) scores, as described in</p>
 <ul>
 <li>Soneson C, Love MI, Patro R, Hussain S, Malhotra D and Robinson MD: A junction coverage compatibility score to quantify the reliability of transcript abundance estimates and annotation catalogs. <a href="http://www.life-science-alliance.org/content/2/1/e201800175.abstract" class="external-link">Life Science Alliance 2019</a>.</li>
 </ul>
 <p>The JCC scores are aimed at detecting genes for which estimated transcript abundances are unreliable, either because of problems in the transcript abundance estimation or because of missing or wrongly annotated reference transcripts. It does so by comparing the number of reads predicted to align across each junction, inferred from the transcript abundances and a fragment bias model, to the observed number of junction-spanning reads, obtained via alignment of the reads to the genome. A high JCC score for a gene indicates that the estimated abundances for the corresponding transcripts are unreliable and should be treated with care in downstream analyses.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor" aria-hidden="true"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <p>The <code>jcc</code> package can be installed using <code>devtools</code>:</p>
-<pre><code><a href="https://rdrr.io/r/base/library.html" class="external-link">library(devtools)
-install_github("csoneson/jcc")</a></code></pre>
+<pre><code><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span>
+<span class="fu">install_github</span><span class="op">(</span><span class="st">"csoneson/jcc"</span><span class="op">)</span></code></pre>
 <p>or the <code>BiocManager</code> CRAN package</p>
-<pre><code>BiocManager::install("csoneson/jcc")</code></pre>
+<pre><code><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"csoneson/jcc"</span><span class="op">)</span></code></pre>
 </div>
 </div>
   </div>
@@ -102,7 +102,7 @@ install_github("csoneson/jcc")</a></code></pre>
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
