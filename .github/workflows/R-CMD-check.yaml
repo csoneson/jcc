@@ -112,11 +112,11 @@ jobs:
       - name: Build, Install, Check
         uses: grimbough/bioc-actions/build-install-check@v1
 
-      - name: Run BiocCheck
-        uses: grimbough/bioc-actions/run-BiocCheck@v1
-        with:
-          arguments: '--no-check-bioc-views --no-check-bioc-help'
-          error-on: 'error'
+#      - name: Run BiocCheck
+#        uses: grimbough/bioc-actions/run-BiocCheck@v1
+#        with:
+#          arguments: '--no-check-bioc-views --no-check-bioc-help'
+#          error-on: 'error'
 
       - name: Show testthat output
         if: always()
