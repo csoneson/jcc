@@ -62,10 +62,10 @@ fragment bias model.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">fitAlpineBiasModel</span><span class="op">(</span><span class="va">gtf</span>, <span class="va">bam</span>, <span class="va">organism</span>, <span class="va">genome</span>, <span class="va">genomeVersion</span>, <span class="va">version</span>,
-  minLength <span class="op">=</span> <span class="fl">600</span>, maxLength <span class="op">=</span> <span class="fl">7000</span>, minCount <span class="op">=</span> <span class="fl">500</span>, maxCount <span class="op">=</span> <span class="fl">10000</span>,
-  subsample <span class="op">=</span> <span class="cn">TRUE</span>, nbrSubsample <span class="op">=</span> <span class="fl">200</span>, seed <span class="op">=</span> <span class="fl">1</span>, minSize <span class="op">=</span> <span class="cn">NULL</span>,
-  maxSize <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fitAlpineBiasModel</span><span class="op">(</span><span class="va">gtf</span>, <span class="va">bam</span>, <span class="va">organism</span>, <span class="va">genome</span>, <span class="va">genomeVersion</span>, <span class="va">version</span>,</span>
+<span>  minLength <span class="op">=</span> <span class="fl">600</span>, maxLength <span class="op">=</span> <span class="fl">7000</span>, minCount <span class="op">=</span> <span class="fl">500</span>, maxCount <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  subsample <span class="op">=</span> <span class="cn">TRUE</span>, nbrSubsample <span class="op">=</span> <span class="fl">200</span>, seed <span class="op">=</span> <span class="fl">1</span>, minSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxSize <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -73,46 +73,73 @@ fragment bias model.</p>
     <dl><dt>gtf</dt>
 <dd><p>Path to gtf file with genomic features. Preferably in Ensembl
 format.</p></dd>
+
+
 <dt>bam</dt>
 <dd><p>Path to bam file with read alignments to the genome.</p></dd>
+
+
 <dt>organism</dt>
 <dd><p>The organism (e.g., 'Homo_sapiens'). This argument will be
 passed to <code><a href="https://rdrr.io/pkg/ensembldb/man/makeEnsemblDbPackage.html" class="external-link">ensembldb::ensDbFromGtf</a></code>.</p></dd>
+
+
 <dt>genome</dt>
 <dd><p>A <code>BSgenome</code> object.</p></dd>
+
+
 <dt>genomeVersion</dt>
 <dd><p>Genome version (e.g., 'GRCh38'). This argument will be
 passed to <code><a href="https://rdrr.io/pkg/ensembldb/man/makeEnsemblDbPackage.html" class="external-link">ensembldb::ensDbFromGtf</a></code>.</p></dd>
+
+
 <dt>version</dt>
 <dd><p>The version of the reference annotation (e.g., 90). This
 argument will be passed to <code><a href="https://rdrr.io/pkg/ensembldb/man/makeEnsemblDbPackage.html" class="external-link">ensembldb::ensDbFromGtf</a></code>.</p></dd>
+
+
 <dt>minLength, maxLength</dt>
 <dd><p>Minimum and maximum length of single-isoform genes
 used to fit fragment bias model.</p></dd>
+
+
 <dt>minCount, maxCount</dt>
 <dd><p>Minimum and maximum read coverage of single-isoform
 genes used to fit fragment bias model.</p></dd>
+
+
 <dt>subsample</dt>
 <dd><p>Whether to subsample the set of single-isoform genes
 satisfying the <code>minLength</code>, <code>maxLength</code>, <code>minCount</code> and
 <code>maxCount</code> criteria before fitting the fragment bias model.</p></dd>
+
+
 <dt>nbrSubsample</dt>
 <dd><p>If <code>subsample</code> is <code>TRUE</code>, the number of genes
 to subsample.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>If <code>subsample</code> is <code>TRUE</code>, the random seed to use to
 ensure reproducibility.</p></dd>
+
+
 <dt>minSize, maxSize</dt>
 <dd><p>Smallest and largest fragment size to consider. One or
 both of these can be <code>NULL</code>, in which case it is estimated as the 2.5
 or 97.5 percentile, respectively, of estimated fragment sizes in the
 provided data.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Logical, whether to print progress messages.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with three elements:</p><dl><dt><code>biasModel</code>:</dt>
+    
+
+<p>A list with three elements:</p><dl><dt><code>biasModel</code>:</dt>
 <dd><p>The
   fitted fragment bias model.</p></dd>
  <dt><code>exonsByTx</code>:</dt>
@@ -140,20 +167,20 @@ Biotechnology 34(12):1287-1291 (2016).</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">gtf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz"</span>,</span>
-<span class="r-in">                   package <span class="op">=</span> <span class="st">"jcc"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">bam</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/reads.chr22.bam"</span>, package <span class="op">=</span> <span class="st">"jcc"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">biasMod</span> <span class="op">&lt;-</span> <span class="fu">fitAlpineBiasModel</span><span class="op">(</span>gtf <span class="op">=</span> <span class="va">gtf</span>, bam <span class="op">=</span> <span class="va">bam</span>,</span>
-<span class="r-in">                              organism <span class="op">=</span> <span class="st">"Homo_sapiens"</span>,</span>
-<span class="r-in">                              genome <span class="op">=</span> <span class="va">Hsapiens</span>, genomeVersion <span class="op">=</span> <span class="st">"GRCh38"</span>,</span>
-<span class="r-in">                              version <span class="op">=</span> <span class="fl">90</span>, minLength <span class="op">=</span> <span class="fl">230</span>,</span>
-<span class="r-in">                              maxLength <span class="op">=</span> <span class="fl">7000</span>, minCount <span class="op">=</span> <span class="fl">10</span>,</span>
-<span class="r-in">                              maxCount <span class="op">=</span> <span class="fl">10000</span>, subsample <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">                              nbrSubsample <span class="op">=</span> <span class="fl">30</span>, seed <span class="op">=</span> <span class="fl">1</span>, minSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span class="r-in">                              maxSize <span class="op">=</span> <span class="fl">220</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">gtf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Homo_sapiens.GRCh38.90.chr22.gtf.gz"</span>,</span></span>
+<span class="r-in"><span>                   package <span class="op">=</span> <span class="st">"jcc"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bam</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/reads.chr22.bam"</span>, package <span class="op">=</span> <span class="st">"jcc"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">biasMod</span> <span class="op">&lt;-</span> <span class="fu">fitAlpineBiasModel</span><span class="op">(</span>gtf <span class="op">=</span> <span class="va">gtf</span>, bam <span class="op">=</span> <span class="va">bam</span>,</span></span>
+<span class="r-in"><span>                              organism <span class="op">=</span> <span class="st">"Homo_sapiens"</span>,</span></span>
+<span class="r-in"><span>                              genome <span class="op">=</span> <span class="va">Hsapiens</span>, genomeVersion <span class="op">=</span> <span class="st">"GRCh38"</span>,</span></span>
+<span class="r-in"><span>                              version <span class="op">=</span> <span class="fl">90</span>, minLength <span class="op">=</span> <span class="fl">230</span>,</span></span>
+<span class="r-in"><span>                              maxLength <span class="op">=</span> <span class="fl">7000</span>, minCount <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>                              maxCount <span class="op">=</span> <span class="fl">10000</span>, subsample <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                              nbrSubsample <span class="op">=</span> <span class="fl">30</span>, seed <span class="op">=</span> <span class="fl">1</span>, minSize <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
+<span class="r-in"><span>                              maxSize <span class="op">=</span> <span class="fl">220</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -168,7 +195,7 @@ Biotechnology 34(12):1287-1291 (2016).</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

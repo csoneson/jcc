@@ -54,7 +54,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">scaledCoverage</span><span class="op">(</span><span class="va">uniqreads</span>, <span class="va">mmreads</span>, <span class="va">predcovs</span>, <span class="va">g</span>, beta <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">scaledCoverage</span><span class="op">(</span><span class="va">uniqreads</span>, <span class="va">mmreads</span>, <span class="va">predcovs</span>, <span class="va">g</span>, beta <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -62,26 +62,39 @@
     <dl><dt>uniqreads</dt>
 <dd><p>Vector with the number of uniquely mapping junction-spanning
 reads for each junction in the gene.</p></dd>
+
+
 <dt>mmreads</dt>
 <dd><p>Vector with the number of multimapping junction-spanning reads
 for each junction in the gene.</p></dd>
+
+
 <dt>predcovs</dt>
 <dd><p>Vector with the predicted junction coverages for each
 junction in the gene.</p></dd>
+
+
 <dt>g</dt>
 <dd><p>Junction weight function that takes as input the fraction of
 uniquely mapping reads for the junction, and returns a weight for the
 junction contribution to the score.</p></dd>
+
+
 <dt>beta</dt>
 <dd><p>Scaling exponent. If beta=1, predicted coverages are scaled to
 have the same (weighted) sum as the observed coverages. If beta=0, no
 scaling is done.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Additional parameters passed to <code>g</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector of scaled junction coverages</p>
+    
+
+<p>A vector of scaled junction coverages</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -100,7 +113,7 @@ scaling is done.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>
