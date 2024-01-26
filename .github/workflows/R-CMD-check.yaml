@@ -19,9 +19,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - { os: windows-latest, bioc: 'release'}
-        - { os: macOS-latest, bioc: 'release', curlConfigPath: '/usr/bin/'}
-        - { os: ubuntu-latest, bioc: 'release'}
+        - { os: windows-latest, bioc: '3.17'}
+        - { os: macOS-latest, bioc: '3.17', curlConfigPath: '/usr/bin/'}
+        - { os: ubuntu-latest, bioc: '3.17'}
 #        - { os: ubuntu-latest, r: 'devel', bioc: 'devel', cran: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
         - { os: ubuntu-latest, image: 'bioconductor/bioconductor_docker:RELEASE_3_17'}
 
