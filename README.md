@@ -24,3 +24,5 @@ or the `BiocManager` CRAN package
 ```
 BiocManager::install("csoneson/jcc")
 ```
+
+Note that `jcc` depends on the `alpine` package, which was removed from Bioconductor in release 3.18. Thus, in order to use `jcc`, please install Bioconductor release 3.17 or earlier. 
