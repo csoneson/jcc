@@ -1,6 +1,7 @@
 # Junction coverage compatibility scores
 
 [![R build status](https://github.com/csoneson/jcc/workflows/R-CMD-check/badge.svg)](https://github.com/csoneson/jcc/actions)
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 <!--[![Codecov.io coverage status](https://codecov.io/github/csoneson/jcc/coverage.svg?branch=master)](https://codecov.io/github/csoneson/jcc)-->
 
 
