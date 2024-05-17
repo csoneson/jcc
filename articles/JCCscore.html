@@ -19,8 +19,6 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -36,7 +34,6 @@
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
-
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -45,7 +42,6 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -62,9 +58,6 @@
 <!--/.container -->
 </div>
 <!--/.navbar -->
-
-      
-
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -81,17 +74,10 @@ Hussain</h4>
 Malhotra</h4>
                                     <h4 data-toc-skip class="author">Mark
 D Robinson</h4>
-                        
-            <h4 data-toc-skip class="date">2024-03-24</h4>
-      
-      
-      <div class="hidden name"><code>JCCscore.Rmd</code></div>
-
+                                    <h4 data-toc-skip class="date">2024-05-17</h4>
+            <div class="hidden name"><code>JCCscore.Rmd</code></div>
     </div>
-
-    
-    
-<div class="section level2">
+        <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>This vignette describes how to use the <code>jcc</code> package to
@@ -246,8 +232,9 @@ reference transcripts.</li>
 </ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">biasMod</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "biasModel"   "exonsByTx"   "transcripts"</span></span>
-<span></span>
+<span><span class="co">#&gt; [1] "biasModel"   "exonsByTx"   "transcripts"</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">biasMod</span><span class="op">$</span><span class="va">exonsByTx</span></span>
 <span><span class="co">#&gt; GRangesList object of length 510:</span></span>
 <span><span class="co">#&gt; $ENST00000624155</span></span>
@@ -285,8 +272,9 @@ reference transcripts.</li>
 <span><span class="co">#&gt;   seqinfo: 1 sequence from an unspecified genome; no seqlengths</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ...</span></span>
-<span><span class="co">#&gt; &lt;507 more elements&gt;</span></span>
-<span></span>
+<span><span class="co">#&gt; &lt;507 more elements&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">biasMod</span><span class="op">$</span><span class="va">transcripts</span></span>
 <span><span class="co">#&gt; GRanges object with 510 ranges and 2 metadata columns:</span></span>
 <span><span class="co">#&gt;                   seqnames            ranges strand |         tx_name</span></span>
@@ -328,7 +316,7 @@ the coverage profiles for all transcripts in the annotation catalog.
 Note, however, that this is computationally demanding if the number of
 transcripts is large. The <code>nCores</code> argument can be increased
 to predict coverage profiles for several transcripts in parallel.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Load transcript-to-gene conversion table</span></span>
 <span><span class="va">tx2gene</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/tx2gene.sub.rds"</span>, package <span class="op">=</span> <span class="st">"jcc"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tx2gene</span><span class="op">)</span></span>
@@ -338,8 +326,9 @@ to predict coverage profiles for several transcripts in parallel.</p>
 <span><span class="co">#&gt; 4526 ENST00000412649 ENSG00000070371 CLTCL1 protein_coding retained_intron</span></span>
 <span><span class="co">#&gt; 4527 ENST00000622493 ENSG00000070371 CLTCL1 protein_coding  protein_coding</span></span>
 <span><span class="co">#&gt; 4528 ENST00000617926 ENSG00000070371 CLTCL1 protein_coding  protein_coding</span></span>
-<span><span class="co">#&gt; 4529 ENST00000615606 ENSG00000070371 CLTCL1 protein_coding retained_intron</span></span>
-<span></span>
+<span><span class="co">#&gt; 4529 ENST00000615606 ENSG00000070371 CLTCL1 protein_coding retained_intron</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co">## Predict transcript coverage profiles</span></span>
 <span><span class="va">predCovProfiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predictTxCoverage.html">predictTxCoverage</a></span><span class="op">(</span>biasModel <span class="op">=</span> <span class="va">biasMod</span><span class="op">$</span><span class="va">biasModel</span>, </span>
 <span>                                     exonsByTx <span class="op">=</span> <span class="va">biasMod</span><span class="op">$</span><span class="va">exonsByTx</span>, </span>
@@ -417,8 +406,9 @@ to predict coverage profiles for several transcripts in parallel.</p>
 <span><span class="co">#&gt; Predicting junction coverages...</span></span>
 <span><span class="co">#&gt; ENST00000449918</span></span>
 <span><span class="co">#&gt; Warning in .local(x, row.names, optional, ...): 'optional' argument was ignored</span></span>
-<span><span class="co">#&gt; Predicting junction coverages...</span></span>
-<span></span>
+<span><span class="co">#&gt; Predicting junction coverages...</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">predCovProfiles</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 23</span></span></code></pre></div>
 <p>The output of <code>predictTxCoverage</code> is a list with one
@@ -445,7 +435,7 @@ transcript is shorter than the fragment length or because no reads in
 the BAM file overlapped the transcript. In both these cases, we impose a
 uniform coverage profile for the transcript.</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">predCovProfiles</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $ENST00000403184</span></span>
 <span><span class="co">#&gt; $ENST00000403184$predCov</span></span>
@@ -480,7 +470,7 @@ uniform coverage profile for the transcript.</li>
 and a set of estimated transcript abundances, we next determine the
 number of reads predicted to map across each annotated splice
 junction.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Read transcript abundance estimates</span></span>
 <span><span class="va">txQuants</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/quant.sub.rds"</span>, package <span class="op">=</span> <span class="st">"jcc"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -501,10 +491,11 @@ transcript abundances, including information about whether or not the
 coverage profile could be predicted (‘covOK’) or if a uniform coverage
 was imposed (‘covError’ or ‘covNA’).</li>
 </ul>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">txsc</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "junctionPredCovs" "txQuants"</span></span>
-<span></span>
+<span><span class="co">#&gt; [1] "junctionPredCovs" "txQuants"</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">txsc</span><span class="op">$</span><span class="va">junctionPredCovs</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   seqnames    start      end width strand   predCov</span></span>
 <span><span class="co">#&gt; 1       22 19941898 19961198 19301      +  75.58930</span></span>
@@ -526,8 +517,9 @@ was imposed (‘covError’ or ‘covNA’).</li>
 <span><span class="co">#&gt; 3 ENSG00000093010 Salmon</span></span>
 <span><span class="co">#&gt; 4 ENSG00000093010 Salmon</span></span>
 <span><span class="co">#&gt; 5 ENSG00000093010 Salmon</span></span>
-<span><span class="co">#&gt; 6 ENSG00000093010 Salmon</span></span>
-<span></span>
+<span><span class="co">#&gt; 6 ENSG00000093010 Salmon</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">txsc</span><span class="op">$</span><span class="va">txQuants</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        transcript            gene   count      TPM method covNote</span></span>
 <span><span class="co">#&gt; 1 ENST00000621271 ENSG00000070371 263.734 0.748398 Salmon   covOK</span></span>
@@ -550,7 +542,7 @@ column names and combine these observed junction coverages with the
 predicted ones obtained above. If the reads were aligned to the genome
 with another aligner than STAR, the observed junction coverages may need
 to be determined separately and formatted in the appropriate way.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Read the SJ.out.tab file from STAR, add column names and encode the strand</span></span>
 <span><span class="co">## information as +/-</span></span>
 <span><span class="va">jcov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.delim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/sub.SJ.out.tab"</span>, package <span class="op">=</span> <span class="st">"jcc"</span><span class="op">)</span>,</span>
@@ -569,8 +561,9 @@ to be determined separately and formatted in the appropriate way.</p>
 <span><span class="co">#&gt; 3       22 10947419 10949211      -         4       0</span></span>
 <span><span class="co">#&gt; 4       22 10949270 10950048      -         1       0</span></span>
 <span><span class="co">#&gt; 5       22 10950136 10959066      -         3       0</span></span>
-<span><span class="co">#&gt; 6       22 10950175 10959066      -         2      11</span></span>
-<span></span>
+<span><span class="co">#&gt; 6       22 10950175 10959066      -         2      11</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co">## Combine the observed and predicted junction coverages</span></span>
 <span><span class="va">combCov</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combineCoverages.html">combineCoverages</a></span><span class="op">(</span>junctionCounts <span class="op">=</span> <span class="va">jcov</span>, </span>
 <span>                            junctionPredCovs <span class="op">=</span> <span class="va">txsc</span><span class="op">$</span><span class="va">junctionPredCovs</span>,</span>
@@ -595,10 +588,11 @@ was imposed (‘covError’ or ‘covNA’).</li>
 gene abundances as well as the total number uniquely mapping and
 multi-mapping reads spanning any of the junctions in the gene.</li>
 </ul>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">combCov</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "junctionCovs" "txQuants"     "geneQuants"</span></span>
-<span></span>
+<span><span class="co">#&gt; [1] "junctionCovs" "txQuants"     "geneQuants"</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">combCov</span><span class="op">$</span><span class="va">junctionCovs</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   junctionid seqnames    start      end width strand   predCov</span></span>
 <span><span class="co">#&gt; 1         J1       22 19941898 19961198 19301      +  75.58930</span></span>
@@ -620,8 +614,9 @@ multi-mapping reads spanning any of the junctions in the gene.</li>
 <span><span class="co">#&gt; 3 ENSG00000093010 Salmon       160       0  1.0000000</span></span>
 <span><span class="co">#&gt; 4 ENSG00000093010 Salmon       365       0  1.0000000</span></span>
 <span><span class="co">#&gt; 5 ENSG00000093010 Salmon       402       0  1.0000000</span></span>
-<span><span class="co">#&gt; 6 ENSG00000093010 Salmon         0       0  1.0000000</span></span>
-<span></span>
+<span><span class="co">#&gt; 6 ENSG00000093010 Salmon         0       0  1.0000000</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">combCov</span><span class="op">$</span><span class="va">txQuants</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        transcript            gene   count      TPM method covNote</span></span>
 <span><span class="co">#&gt; 1 ENST00000621271 ENSG00000070371 263.734 0.748398 Salmon   covOK</span></span>
@@ -629,8 +624,9 @@ multi-mapping reads spanning any of the junctions in the gene.</li>
 <span><span class="co">#&gt; 3 ENST00000412649 ENSG00000070371  59.429 0.259538 Salmon   covOK</span></span>
 <span><span class="co">#&gt; 4 ENST00000622493 ENSG00000070371  39.974 0.415456 Salmon   covOK</span></span>
 <span><span class="co">#&gt; 5 ENST00000617926 ENSG00000070371   0.000 0.000000 Salmon   covOK</span></span>
-<span><span class="co">#&gt; 6 ENST00000615606 ENSG00000070371   0.000 0.000000 Salmon   covOK</span></span>
-<span></span>
+<span><span class="co">#&gt; 6 ENST00000615606 ENSG00000070371   0.000 0.000000 Salmon   covOK</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">combCov</span><span class="op">$</span><span class="va">geneQuants</span><span class="op">)</span></span>
 <span><span class="co">#&gt;              gene method    count       TPM nbr_expressed_transcripts</span></span>
 <span><span class="co">#&gt; 1 ENSG00000070371 Salmon  547.001  2.103382                         1</span></span>
@@ -649,7 +645,7 @@ multi-mapping reads spanning any of the junctions in the gene.</li>
 summarize the differences between the observed and predicted junction
 coverages for each gene by the JCC (junction coverage compatibility)
 scores.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Calculate a JCC score for each gene</span></span>
 <span><span class="va">jcc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateJCCScores.html">calculateJCCScores</a></span><span class="op">(</span>junctionCovs <span class="op">=</span> <span class="va">combCov</span><span class="op">$</span><span class="va">junctionCovs</span>, </span>
 <span>                          geneQuants <span class="op">=</span> <span class="va">combCov</span><span class="op">$</span><span class="va">geneQuants</span><span class="op">)</span></span>
@@ -682,8 +678,9 @@ scores.</p>
 <span><span class="co">#&gt; 3 Salmon (0.73)</span></span>
 <span><span class="co">#&gt; 4 Salmon (0.73)</span></span>
 <span><span class="co">#&gt; 5 Salmon (0.73)</span></span>
-<span><span class="co">#&gt; 6 Salmon (0.73)</span></span>
-<span></span>
+<span><span class="co">#&gt; 6 Salmon (0.73)</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">jcc</span><span class="op">$</span><span class="va">geneScores</span><span class="op">)</span></span>
 <span><span class="co">#&gt;              gene method    count       TPM nbr_expressed_transcripts</span></span>
 <span><span class="co">#&gt; 1 ENSG00000070371 Salmon  547.001  2.103382                         1</span></span>
@@ -714,7 +711,7 @@ abundances, extended with the calculated JCC scores
 junction coverages for a given gene, we can plot the
 <code>uniqreads</code> and <code>scaledCov</code> columns from the
 junction coverage data frame generated in the previous step:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">selGene</span> <span class="op">&lt;-</span> <span class="st">"ENSG00000070371"</span></span>
 <span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">jcc</span><span class="op">$</span><span class="va">junctionCovs</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>                  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">gene</span> <span class="op">==</span> <span class="va">selGene</span><span class="op">)</span>, </span>
@@ -732,7 +729,7 @@ junction coverage data frame generated in the previous step:</p>
 showing (i) the observed genome coverage profile in the region of the
 gene, (ii) the estimated transcript abundances, and (iii) the
 association between the observed and predicted junction coverages.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bwFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/reads.chr22.bw"</span>, package <span class="op">=</span> <span class="st">"jcc"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotGeneSummary.html">plotGeneSummary</a></span><span class="op">(</span>gtf <span class="op">=</span> <span class="va">gtf</span>, junctionCovs <span class="op">=</span> <span class="va">jcc</span><span class="op">$</span><span class="va">junctionCovs</span>, </span>
 <span>                useGene <span class="op">=</span> <span class="st">"ENSG00000070371"</span>, bwFile <span class="op">=</span> <span class="va">bwFile</span>,</span>
@@ -746,15 +743,15 @@ association between the observed and predicted junction coverages.</p>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.3.3 (2024-02-29)</span></span>
-<span><span class="co">#&gt; Platform: x86_64-apple-darwin20 (64-bit)</span></span>
-<span><span class="co">#&gt; Running under: macOS Monterey 12.7.3</span></span>
+<span><span class="co">#&gt; Platform: aarch64-apple-darwin20 (64-bit)</span></span>
+<span><span class="co">#&gt; Running under: macOS Sonoma 14.4.1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Matrix products: default</span></span>
-<span><span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRblas.0.dylib </span></span>
-<span><span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0</span></span>
+<span><span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib </span></span>
+<span><span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; locale:</span></span>
 <span><span class="co">#&gt; [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span></span>
@@ -784,25 +781,25 @@ association between the observed and predicted junction coverages.</p>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;   [1] RColorBrewer_1.1-3          rstudioapi_0.16.0          </span></span>
 <span><span class="co">#&gt;   [3] jsonlite_1.8.8              magrittr_2.0.3             </span></span>
-<span><span class="co">#&gt;   [5] GenomicFeatures_1.52.2      farver_2.1.1               </span></span>
-<span><span class="co">#&gt;   [7] rmarkdown_2.26              fs_1.6.3                   </span></span>
+<span><span class="co">#&gt;   [5] GenomicFeatures_1.52.2      farver_2.1.2               </span></span>
+<span><span class="co">#&gt;   [7] rmarkdown_2.27.1            fs_1.6.4                   </span></span>
 <span><span class="co">#&gt;   [9] BiocIO_1.10.0               zlibbioc_1.46.0            </span></span>
-<span><span class="co">#&gt;  [11] ragg_1.3.0                  vctrs_0.6.5                </span></span>
+<span><span class="co">#&gt;  [11] ragg_1.3.2                  vctrs_0.6.5                </span></span>
 <span><span class="co">#&gt;  [13] memoise_2.0.1               Rsamtools_2.16.0           </span></span>
 <span><span class="co">#&gt;  [15] RCurl_1.98-1.14             base64enc_0.1-3            </span></span>
-<span><span class="co">#&gt;  [17] htmltools_0.5.7             S4Arrays_1.0.6             </span></span>
+<span><span class="co">#&gt;  [17] htmltools_0.5.8.1           S4Arrays_1.0.6             </span></span>
 <span><span class="co">#&gt;  [19] progress_1.2.3              curl_5.2.1                 </span></span>
 <span><span class="co">#&gt;  [21] Formula_1.2-5               sass_0.4.9                 </span></span>
-<span><span class="co">#&gt;  [23] bslib_0.6.2                 htmlwidgets_1.6.4          </span></span>
+<span><span class="co">#&gt;  [23] bslib_0.7.0                 htmlwidgets_1.6.4          </span></span>
 <span><span class="co">#&gt;  [25] desc_1.4.3                  Gviz_1.44.2                </span></span>
-<span><span class="co">#&gt;  [27] cachem_1.0.8                GenomicAlignments_1.36.0   </span></span>
+<span><span class="co">#&gt;  [27] cachem_1.1.0                GenomicAlignments_1.36.0   </span></span>
 <span><span class="co">#&gt;  [29] lifecycle_1.0.4             pkgconfig_2.0.3            </span></span>
 <span><span class="co">#&gt;  [31] Matrix_1.6-5                R6_2.5.1                   </span></span>
-<span><span class="co">#&gt;  [33] fastmap_1.1.1               GenomeInfoDbData_1.2.10    </span></span>
+<span><span class="co">#&gt;  [33] fastmap_1.2.0               GenomeInfoDbData_1.2.10    </span></span>
 <span><span class="co">#&gt;  [35] MatrixGenerics_1.12.3       digest_0.6.35              </span></span>
 <span><span class="co">#&gt;  [37] colorspace_2.1-0            AnnotationDbi_1.62.2       </span></span>
 <span><span class="co">#&gt;  [39] textshaping_0.3.7           Hmisc_5.1-2                </span></span>
-<span><span class="co">#&gt;  [41] RSQLite_2.3.5               labeling_0.4.3             </span></span>
+<span><span class="co">#&gt;  [41] RSQLite_2.3.6               labeling_0.4.3             </span></span>
 <span><span class="co">#&gt;  [43] filelock_1.0.3              fansi_1.0.6                </span></span>
 <span><span class="co">#&gt;  [45] polyclip_1.10-6             httr_1.4.7                 </span></span>
 <span><span class="co">#&gt;  [47] abind_1.4-5                 compiler_4.3.3             </span></span>
@@ -814,36 +811,36 @@ association between the observed and predicted junction coverages.</p>
 <span><span class="co">#&gt;  [59] biomaRt_2.56.1              MASS_7.3-60.0.1            </span></span>
 <span><span class="co">#&gt;  [61] rappdirs_0.3.3              DelayedArray_0.26.7        </span></span>
 <span><span class="co">#&gt;  [63] rjson_0.2.21                tools_4.3.3                </span></span>
-<span><span class="co">#&gt;  [65] foreign_0.8-86              scatterpie_0.2.1           </span></span>
+<span><span class="co">#&gt;  [65] foreign_0.8-86              scatterpie_0.2.2           </span></span>
 <span><span class="co">#&gt;  [67] nnet_7.3-19                 glue_1.7.0                 </span></span>
 <span><span class="co">#&gt;  [69] restfulr_0.0.15             grid_4.3.3                 </span></span>
 <span><span class="co">#&gt;  [71] checkmate_2.3.1             cluster_2.1.6              </span></span>
-<span><span class="co">#&gt;  [73] generics_0.1.3              gtable_0.3.4               </span></span>
+<span><span class="co">#&gt;  [73] generics_0.1.3              gtable_0.3.5               </span></span>
 <span><span class="co">#&gt;  [75] tidyr_1.3.1                 ensembldb_2.24.1           </span></span>
-<span><span class="co">#&gt;  [77] data.table_1.15.2           hms_1.1.3                  </span></span>
+<span><span class="co">#&gt;  [77] data.table_1.15.4           hms_1.1.3                  </span></span>
 <span><span class="co">#&gt;  [79] xml2_1.3.6                  utf8_1.2.4                 </span></span>
 <span><span class="co">#&gt;  [81] pillar_1.9.0                stringr_1.5.1              </span></span>
 <span><span class="co">#&gt;  [83] splines_4.3.3               tweenr_2.0.3               </span></span>
 <span><span class="co">#&gt;  [85] BiocFileCache_2.8.0         lattice_0.22-6             </span></span>
 <span><span class="co">#&gt;  [87] deldir_2.0-4                bit_4.0.5                  </span></span>
 <span><span class="co">#&gt;  [89] biovizBase_1.48.0           RBGL_1.76.0                </span></span>
-<span><span class="co">#&gt;  [91] tidyselect_1.2.1            knitr_1.45                 </span></span>
-<span><span class="co">#&gt;  [93] gridExtra_2.3               bookdown_0.38              </span></span>
+<span><span class="co">#&gt;  [91] tidyselect_1.2.1            knitr_1.46                 </span></span>
+<span><span class="co">#&gt;  [93] gridExtra_2.3               bookdown_0.39              </span></span>
 <span><span class="co">#&gt;  [95] ProtGenerics_1.32.0         SummarizedExperiment_1.30.2</span></span>
-<span><span class="co">#&gt;  [97] xfun_0.42                   Biobase_2.60.0             </span></span>
-<span><span class="co">#&gt;  [99] matrixStats_1.2.0           stringi_1.8.3              </span></span>
+<span><span class="co">#&gt;  [97] xfun_0.44                   Biobase_2.60.0             </span></span>
+<span><span class="co">#&gt;  [99] matrixStats_1.3.0           stringi_1.8.4              </span></span>
 <span><span class="co">#&gt; [101] ggfun_0.1.4                 lazyeval_0.2.2             </span></span>
 <span><span class="co">#&gt; [103] yaml_2.3.8                  evaluate_0.23              </span></span>
-<span><span class="co">#&gt; [105] codetools_0.2-19            interp_1.1-6               </span></span>
+<span><span class="co">#&gt; [105] codetools_0.2-20            interp_1.1-6               </span></span>
 <span><span class="co">#&gt; [107] tibble_3.2.1                graph_1.78.0               </span></span>
-<span><span class="co">#&gt; [109] BiocManager_1.30.22         cli_3.6.2                  </span></span>
-<span><span class="co">#&gt; [111] rpart_4.1.23                systemfonts_1.0.6          </span></span>
-<span><span class="co">#&gt; [113] munsell_0.5.0               jquerylib_0.1.4            </span></span>
+<span><span class="co">#&gt; [109] BiocManager_1.30.23         cli_3.6.2                  </span></span>
+<span><span class="co">#&gt; [111] rpart_4.1.23                systemfonts_1.1.0          </span></span>
+<span><span class="co">#&gt; [113] munsell_0.5.1               jquerylib_0.1.4            </span></span>
 <span><span class="co">#&gt; [115] Rcpp_1.0.12                 dichromat_2.0-0.1          </span></span>
 <span><span class="co">#&gt; [117] dbplyr_2.5.0                png_0.1-8                  </span></span>
 <span><span class="co">#&gt; [119] XML_3.99-0.16.1             parallel_4.3.3             </span></span>
-<span><span class="co">#&gt; [121] alpine_1.26.0               pkgdown_2.0.7.9000         </span></span>
-<span><span class="co">#&gt; [123] ggplot2_3.5.0               blob_1.2.4                 </span></span>
+<span><span class="co">#&gt; [121] alpine_1.26.0               pkgdown_2.0.9.9000         </span></span>
+<span><span class="co">#&gt; [123] ggplot2_3.5.1               blob_1.2.4                 </span></span>
 <span><span class="co">#&gt; [125] prettyunits_1.2.0           latticeExtra_0.6-30        </span></span>
 <span><span class="co">#&gt; [127] jpeg_0.1-10                 AnnotationFilter_1.24.0    </span></span>
 <span><span class="co">#&gt; [129] bitops_1.0-7                VariantAnnotation_1.46.0   </span></span>
@@ -877,34 +874,20 @@ Estimates and Annotation Catalogs.”</span> <em>bioRxiv
 </div>
 </div>
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
         <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
     </nav>
 </div>
-
 </div>
-
-
-
       <footer><div class="copyright">
   <p></p>
 <p>Developed by Charlotte Soneson.</p>
 </div>
-
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.9000.</p>
 </div>
-
       </footer>
 </div>
-
-  
-
-
-  
-
   </body>
 </html>

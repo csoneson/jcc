@@ -1,7 +1,7 @@
 pandoc: 3.1.11
-pkgdown: 2.0.7.9000
-pkgdown_sha: 676cf1dce39e4dc5aa1bcb671b1e14e992589a0a
+pkgdown: 2.0.9.9000
+pkgdown_sha: 5761658b7582743d0962136cd0c1e6e8d42b56d5
 articles:
   JCCscore: JCCscore.html
-last_built: 2024-03-24T14:39Z
+last_built: 2024-05-17T18:59Z
 
